@@ -30,7 +30,7 @@
     "dravencms": {
       "configuration": {
         "extensions": {
-          "file-download": "Dravencms\\FileDownload\\DI\\FileDownloadExtension"
+          "fileDownload": "Dravencms\\FileDownload\\DI\\FileDownloadExtension"
         }
       }
     }

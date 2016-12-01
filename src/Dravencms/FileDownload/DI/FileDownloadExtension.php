@@ -20,7 +20,7 @@ class FileDownloadExtension extends Nette\DI\CompilerExtension
         $builder = $this->getContainerBuilder();
 
 
-        $builder->addDefinition($this->prefix('file-download'))
+        $builder->addDefinition($this->prefix('fileDownload'))
             ->setClass('Dravencms\FileDownload\FileDownload', []);
 
         $this->loadCmsComponents();

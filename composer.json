@@ -1,0 +1,38 @@
+{
+  "name": "dravencms/file-download",
+  "type": "dravencms-package",
+  "description": "File download module for dravencms",
+  "keywords": [
+    "dravencms",
+    "file-download"
+  ],
+  "license": [
+    "LGPL-3.0"
+  ],
+  "authors": [
+    {
+      "name": "Adam Schubert"
+    }
+  ],
+  "require": {
+    "dravencms/file": "@dev",
+    "dravencms/structure": "@dev"
+  },
+  "require-dev": {
+    "nette/tester": "@dev"
+  },
+  "autoload": {
+    "psr-0": {
+      "Dravencms\\": "src/"
+    }
+  },
+  "extra": {
+    "dravencms": {
+      "configuration": {
+        "extensions": {
+          "file-download": "Dravencms\\FileDownload\\DI\\FileDownloadExtension"
+        }
+      }
+    }
+  }
+}

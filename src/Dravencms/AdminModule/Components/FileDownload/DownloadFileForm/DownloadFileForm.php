@@ -18,22 +18,24 @@
  * MA 02110-1301  USA
  */
 
-namespace Dravencms\AdminModule\Components\File\DownloadForm;
+namespace Dravencms\AdminModule\Components\FileDownload\DownloadFileForm;
 
 use Dravencms\Components\BaseControl\BaseControl;
 use Dravencms\Components\BaseForm\BaseFormFactory;
-use Dravencms\Model\File\Entities\Download;
-use Dravencms\Model\File\Repository\DownloadRepository;
+use Dravencms\Model\FileDownload\Entities\Download;
+use Dravencms\Model\FileDownload\Entities\DownloadFile;
+use Dravencms\Model\FileDownload\Repository\DownloadFileRepository;
+use Dravencms\Model\File\Repository\StructureFileRepository;
 use Dravencms\Model\Locale\Repository\LocaleRepository;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Application\UI\Form;
 
 /**
- * Description of DownloadForm
+ * Description of DownloadFileForm
  *
  * @author Adam Schubert <adam.schubert@sg1-game.net>
  */
-class DownloadForm extends BaseControl
+class DownloadFileForm extends BaseControl
 {
     /** @var BaseFormFactory */
     private $baseFormFactory;
@@ -41,64 +43,76 @@ class DownloadForm extends BaseControl
     /** @var EntityManager */
     private $entityManager;
 
-    /** @var DownloadRepository */
-    private $downloadRepository;
+    /** @var DownloadFileRepository */
+    private $fileRepository;
+    
+    /** @var StructureFileRepository */
+    private $structureFileRepository;
 
     /** @var LocaleRepository */
     private $localeRepository;
 
-    /** @var Download|null */
-    private $download = null;
+    /** @var Download */
+    private $download;
+
+    /** @var DownloadFile|null */
+    private $file = null;
 
     /** @var array */
     public $onSuccess = [];
 
     /**
-     * DownloadForm constructor.
+     * DownloadFileForm constructor.
      * @param BaseFormFactory $baseFormFactory
      * @param EntityManager $entityManager
-     * @param DownloadRepository $downloadRepository
+     * @param DownloadFileRepository $fileRepository
+     * @param StructureFileRepository $structureFileRepository
      * @param LocaleRepository $localeRepository
-     * @param Download|null $download
+     * @param Download $download
+     * @param DownloadFile|null $file
      */
     public function __construct(
         BaseFormFactory $baseFormFactory,
         EntityManager $entityManager,
-        DownloadRepository $downloadRepository,
+        DownloadFileRepository $fileRepository,
+        StructureFileRepository $structureFileRepository,
         LocaleRepository $localeRepository,
-        Download $download = null
+        Download $download,
+        DownloadFile $file = null
     ) {
         parent::__construct();
 
         $this->download = $download;
+        $this->file = $file;
 
         $this->baseFormFactory = $baseFormFactory;
         $this->entityManager = $entityManager;
-        $this->downloadRepository = $downloadRepository;
+        $this->fileRepository = $fileRepository;
         $this->localeRepository = $localeRepository;
+        $this->structureFileRepository = $structureFileRepository;
 
 
-        if ($this->download) {
+        if ($this->file) {
+            
             $defaults = [
-                /*'name' => $this->download->getName(),
-                'description' => $this->download->getDescription(),*/
-                'isShowName' => $this->download->isShowName()
+                'name' => $this->file->getName(),
+                'description' => $this->file->getDescription(),
+                'position' => $this->file->getPosition(),
+                'structureFile' => $this->file->getStructureFile()->getId()
             ];
 
             $repository = $this->entityManager->getRepository('Gedmo\Translatable\Entity\Translation');
-            $defaults += $repository->findTranslations($this->download);
+            $defaults += $repository->findTranslations($this->file);
 
             $defaultLocale = $this->localeRepository->getDefault();
             if ($defaultLocale) {
-                $defaults[$defaultLocale->getLanguageCode()]['name'] = $this->download->getName();
-                $defaults[$defaultLocale->getLanguageCode()]['description'] = $this->download->getDescription();
+                $defaults[$defaultLocale->getLanguageCode()]['name'] = $this->file->getName();
+                $defaults[$defaultLocale->getLanguageCode()]['description'] = $this->file->getDescription();
             }
 
         }
         else{
-            $defaults = [
-                'isShowName' => false
-            ];
+            $defaults = [];
         }
 
         $this['form']->setDefaults($defaults);
@@ -114,13 +128,18 @@ class DownloadForm extends BaseControl
         foreach ($this->localeRepository->getActive() as $activeLocale) {
             $container = $form->addContainer($activeLocale->getLanguageCode());
             $container->addText('name')
-                ->setRequired('Please enter download name.')
-                ->addRule(Form::MAX_LENGTH, 'Download name is too long.', 255);
+                ->setRequired('Please enter file name.')
+                ->addRule(Form::MAX_LENGTH, 'File name is too long.', 255);
 
             $container->addTextArea('description');
         }
 
-        $form->addCheckbox('isShowName');
+        $form->addText('structureFile')
+            ->setType('number')
+            ->setRequired('Please select the photo.');
+
+        $form->addText('position')
+            ->setDisabled(is_null($this->file));
 
         $form->addSubmit('send');
 
@@ -136,14 +155,15 @@ class DownloadForm extends BaseControl
     public function editFormValidate(Form $form)
     {
         $values = $form->getValues();
+
         foreach ($this->localeRepository->getActive() AS $activeLocale) {
-            if (!$this->downloadRepository->isNameFree($values->{$activeLocale->getLanguageCode()}->name, $activeLocale, $this->download)) {
+            if (!$this->fileRepository->isNameFree($values->{$activeLocale->getLanguageCode()}->name, $activeLocale, $this->download, $this->file)) {
                 $form->addError('Tento název je již zabrán.');
             }
         }
 
-        if (!$this->presenter->isAllowed('file', 'downloadEdit')) {
-            $form->addError('Nemáte oprávění editovat download.');
+        if (!$this->presenter->isAllowed('fileDownload', 'edit')) {
+            $form->addError('Nemáte oprávění editovat download file.');
         }
     }
 
@@ -155,29 +175,31 @@ class DownloadForm extends BaseControl
     {
         $values = $form->getValues();
 
+        $structureFile = $this->structureFileRepository->getOneById($values->structureFile);
 
-        if ($this->download) {
-            $download = $this->download;
-            /*$download->setName($values->name);
-            $download->setDescription($values->description);*/
-            $download->setIsShowName($values->isShowName);
+        if ($this->file) {
+            $item = $this->file;
+            /*$item->setName($values->name);
+            $item->setDescription($values->description);*/
+            $item->setPosition($values->position);
+            $item->setStructureFile($structureFile);
         } else {
             $defaultLocale = $this->localeRepository->getDefault();
-            $download = new Download($values->{$defaultLocale->getLanguageCode()}->name, $values->{$defaultLocale->getLanguageCode()}->description, $values->isShowName);
+            $item = new DownloadFile($structureFile, $this->download, $values->{$defaultLocale->getLanguageCode()}->name, $values->{$defaultLocale->getLanguageCode()}->description);
         }
 
         $repository = $this->entityManager->getRepository('Gedmo\\Translatable\\Entity\\Translation');
 
         foreach ($this->localeRepository->getActive() AS $activeLocale) {
-            $repository->translate($download, 'name', $activeLocale->getLanguageCode(), $values->{$activeLocale->getLanguageCode()}->name)
-                ->translate($download, 'description', $activeLocale->getLanguageCode(), $values->{$activeLocale->getLanguageCode()}->description);
+            $repository->translate($item, 'name', $activeLocale->getLanguageCode(), $values->{$activeLocale->getLanguageCode()}->name)
+                ->translate($item, 'description', $activeLocale->getLanguageCode(), $values->{$activeLocale->getLanguageCode()}->description);
         }
-        
-        $this->entityManager->persist($download);
+
+        $this->entityManager->persist($item);
 
         $this->entityManager->flush();
 
-        $this->onSuccess();
+        $this->onSuccess($item);
     }
 
 
@@ -185,7 +207,7 @@ class DownloadForm extends BaseControl
     {
         $template = $this->template;
         $template->activeLocales = $this->localeRepository->getActive();
-        $template->setFile(__DIR__ . '/DownloadForm.latte');
+        $template->setFile(__DIR__ . '/DownloadFileForm.latte');
         $template->render();
     }
 }

@@ -17,15 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-namespace Dravencms\FrontModule\Components\File\Download\Detail;
+namespace Dravencms\AdminModule\Components\FileDownload\DownloadForm;
 
-use Salamek\Cms\ICmsActionOption;
 
-interface DetailFactory
+use Dravencms\Model\FileDownload\Entities\Download;
+
+interface DownloadFormFactory
 {
     /**
-     * @param ICmsActionOption $cmsActionOption
-     * @return Detail
+     * @param Download|null $download
+     * @return DownloadForm
      */
-    public function create(ICmsActionOption $cmsActionOption);
+    public function create(Download $download = null);
 }

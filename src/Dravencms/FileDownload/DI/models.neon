@@ -1,2 +1,5 @@
-- Dravencms\Model\File\Repository\DownloadRepository
-- Dravencms\Model\File\Repository\DownloadFileRepository
+- Dravencms\Model\FileDownload\Repository\DownloadRepository
+- Dravencms\Model\FileDownload\Repository\DownloadFileRepository
+
+- Dravencms\Model\FileDownload\Fixtures\AclOperationFixtures
+- Dravencms\Model\FileDownload\Fixtures\AdminMenuFixtures

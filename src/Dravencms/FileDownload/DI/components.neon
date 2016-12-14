@@ -1,4 +1,4 @@
-- Dravencms\AdminModule\Components\File\DownloadGrid\DownloadGridFactory
-- Dravencms\AdminModule\Components\File\DownloadForm\DownloadFormFactory
-- Dravencms\AdminModule\Components\File\DownloadFileGrid\DownloadFileGridFactory
-- Dravencms\AdminModule\Components\File\DownloadFileForm\DownloadFileFormFactory
+- Dravencms\AdminModule\Components\FileDownload\DownloadGrid\DownloadGridFactory
+- Dravencms\AdminModule\Components\FileDownload\DownloadForm\DownloadFormFactory
+- Dravencms\AdminModule\Components\FileDownload\DownloadFileGrid\DownloadFileGridFactory
+- Dravencms\AdminModule\Components\FileDownload\DownloadFileForm\DownloadFileFormFactory

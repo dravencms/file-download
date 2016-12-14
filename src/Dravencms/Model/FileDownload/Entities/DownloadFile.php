@@ -3,9 +3,10 @@
  * Copyright (C) 2016 Adam Schubert <adam.schubert@sg1-game.net>.
  */
 
-namespace Dravencms\Model\File\Entities;
+namespace Dravencms\Model\FileDownload\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
+use Dravencms\Model\File\Entities\StructureFile;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 use Nette;

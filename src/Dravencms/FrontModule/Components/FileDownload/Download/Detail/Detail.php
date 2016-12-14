@@ -1,10 +1,10 @@
 <?php
 
-namespace Dravencms\FrontModule\Components\File\Download\Detail;
+namespace Dravencms\FrontModule\Components\FileDownload\Download\Detail;
 
 use Dravencms\Components\BaseControl\BaseControl;
-use Dravencms\Model\File\Repository\DownloadFileRepository;
-use Dravencms\Model\File\Repository\DownloadRepository;
+use Dravencms\Model\FileDownload\Repository\DownloadFileRepository;
+use Dravencms\Model\FileDownload\Repository\DownloadRepository;
 use IPub\VisualPaginator\Components\Control;
 use Salamek\Cms\ICmsActionOption;
 use Salamek\Files\FileStorage;

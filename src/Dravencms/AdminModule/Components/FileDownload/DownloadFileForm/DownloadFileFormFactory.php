@@ -17,16 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-namespace Dravencms\AdminModule\Components\File\DownloadForm;
+namespace Dravencms\AdminModule\Components\FileDownload\DownloadFileForm;
 
 
-use Dravencms\Model\File\Entities\Download;
+use Dravencms\Model\FileDownload\Entities\Download;
+use Dravencms\Model\FileDownload\Entities\DownloadFile;
 
-interface DownloadFormFactory
+interface DownloadFileFormFactory
 {
     /**
-     * @param Download|null $download
-     * @return DownloadForm
+     * @param Download $download
+     * @param DownloadFile|null $file
+     * @return DownloadFileForm
      */
-    public function create(Download $download = null);
+    public function create(Download $download, DownloadFile $file = null);
 }

@@ -17,16 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-namespace Dravencms\AdminModule\Components\File\DownloadFileGrid;
+namespace Dravencms\FrontModule\Components\FileDownload\Download\Detail;
 
+use Salamek\Cms\ICmsActionOption;
 
-use Dravencms\Model\File\Entities\Download;
-
-interface DownloadFileGridFactory
+interface DetailFactory
 {
     /**
-     * @param Download $download
-     * @return DownloadFileGrid
+     * @param ICmsActionOption $cmsActionOption
+     * @return Detail
      */
-    public function create(Download $download);
+    public function create(ICmsActionOption $cmsActionOption);
 }

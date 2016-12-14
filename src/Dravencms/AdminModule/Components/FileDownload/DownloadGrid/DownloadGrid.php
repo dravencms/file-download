@@ -19,27 +19,27 @@
  * MA 02110-1301  USA
  */
 
-namespace Dravencms\AdminModule\Components\File\DownloadFileGrid;
+namespace Dravencms\AdminModule\Components\FileDownload\DownloadGrid;
 
 use Dravencms\Components\BaseControl\BaseControl;
 use Dravencms\Components\BaseGrid\BaseGridFactory;
-use Dravencms\Model\File\Entities\Download;
-use Dravencms\Model\File\Repository\DownloadFileRepository;
+use Dravencms\Model\FileDownload\Repository\DownloadRepository;
 use Dravencms\Model\Locale\Repository\LocaleRepository;
 use Kdyby\Doctrine\EntityManager;
 
 /**
- * Description of DownloadFileGrid
+ * Description of DownloadGrid
  *
  * @author Adam Schubert <adam.schubert@sg1-game.net>
  */
-class DownloadFileGrid extends BaseControl
+class DownloadGrid extends BaseControl
 {
+
     /** @var BaseGridFactory */
     private $baseGridFactory;
 
-    /** @var DownloadFileRepository */
-    private $downloadFileRepository;
+    /** @var DownloadRepository */
+    private $downloadRepository;
 
     /** @var EntityManager */
     private $entityManager;
@@ -47,31 +47,26 @@ class DownloadFileGrid extends BaseControl
     /** @var LocaleRepository */
     private $localeRepository;
 
-    /** @var Download */
-    private $download;
-
     /**
      * @var array
      */
     public $onDelete = [];
 
     /**
-     * DownloadFileGrid constructor.
-     * @param Download $download
-     * @param DownloadFileRepository $downloadFileRepository
+     * DownloadGrid constructor.
+     * @param DownloadRepository $downloadRepository
      * @param BaseGridFactory $baseGridFactory
      * @param EntityManager $entityManager
      * @param LocaleRepository $localeRepository
      */
-    public function __construct(Download $download, DownloadFileRepository $downloadFileRepository, BaseGridFactory $baseGridFactory, EntityManager $entityManager, LocaleRepository $localeRepository)
+    public function __construct(DownloadRepository $downloadRepository, BaseGridFactory $baseGridFactory, EntityManager $entityManager, LocaleRepository $localeRepository)
     {
         parent::__construct();
 
         $this->baseGridFactory = $baseGridFactory;
-        $this->downloadFileRepository = $downloadFileRepository;
+        $this->downloadRepository = $downloadRepository;
         $this->entityManager = $entityManager;
         $this->localeRepository = $localeRepository;
-        $this->download = $download;
     }
 
 
@@ -83,61 +78,39 @@ class DownloadFileGrid extends BaseControl
     {
         $grid = $this->baseGridFactory->create($this, $name);
 
-        $grid->setModel($this->downloadFileRepository->getDownloadFileQueryBuilder($this->download));
+        $grid->setModel($this->downloadRepository->getDownloadQueryBuilder());
 
-        $grid->setDefaultSort(['position' => 'ASC']);
         $grid->addColumnText('name', 'Name')
             ->setFilterText()
             ->setSuggestion();
-
-        $grid->addColumnText('structureFile.name', 'File')
-            ->setCustomRender(function($row){
-                return $row->getStructureFile()->getBasename();
-            })
-            ->setFilterText()
-            ->setSuggestion();
-
-        $grid->getColumn('name')->cellPrototype->class[] = 'center';
-
-        $grid->addColumnNumber('downloadCount', 'Download count')
-            ->setFilterNumber();
-
-        $grid->getColumn('downloadCount')->cellPrototype->class[] = 'center';
-
 
         $grid->addColumnDate('updatedAt', 'Last edit', $this->localeRepository->getLocalizedDateTimeFormat())
             ->setSortable()
             ->setFilterDate();
         $grid->getColumn('updatedAt')->cellPrototype->class[] = 'center';
+        
+        if ($this->presenter->isAllowed('fileDownload', 'edit')) {
+            $grid->addActionHref('files', 'Files')
+                ->setIcon('folder-open');
 
-        $grid->addColumnNumber('position', 'Position')
-            ->setFilterNumber()
-            ->setSuggestion();
-
-        $grid->getColumn('position')->cellPrototype->class[] = 'center';
-
-        if ($this->presenter->isAllowed('file', 'downloadEdit')) {
-            $grid->addActionHref('editFile', 'Upravit')
-                ->setCustomHref(function($row){
-                    return $this->presenter->link('editFile', ['downloadId' => $row->getDownload()->getId(), 'fileId' => $row->getId()]);
-                })
+            $grid->addActionHref('edit', 'Upravit')
                 ->setIcon('pencil');
         }
 
-        if ($this->presenter->isAllowed('file', 'downloadDelete')) {
+        if ($this->presenter->isAllowed('fileDownload', 'delete')) {
             $grid->addActionHref('delete', 'Smazat', 'delete!')
                 ->setCustomHref(function($row){
                     return $this->link('delete!', $row->getId());
                 })
                 ->setIcon('trash-o')
                 ->setConfirm(function ($row) {
-                    return ['Opravdu chcete smazat download file %s ?', $row->name];
+                    return ['Opravdu chcete smazat download %s ?', $row->name];
                 });
 
 
             $operations = ['delete' => 'Smazat'];
             $grid->setOperation($operations, [$this, 'gridOperationsHandler'])
-                ->setConfirm('delete', 'Opravu chcete smazat %i download files ?');
+                ->setConfirm('delete', 'Opravu chcete smazat %i downloads ?');
         }
         $grid->setExport();
 
@@ -164,10 +137,10 @@ class DownloadFileGrid extends BaseControl
      */
     public function handleDelete($id)
     {
-        $downloadFiles = $this->downloadFileRepository->getById($id);
-        foreach ($downloadFiles AS $downloadFile)
+        $downloads = $this->downloadRepository->getById($id);
+        foreach ($downloads AS $download)
         {
-            $this->entityManager->remove($downloadFile);
+            $this->entityManager->remove($download);
         }
 
         $this->entityManager->flush();
@@ -178,7 +151,7 @@ class DownloadFileGrid extends BaseControl
     public function render()
     {
         $template = $this->template;
-        $template->setFile(__DIR__ . '/DownloadFileGrid.latte');
+        $template->setFile(__DIR__ . '/DownloadGrid.latte');
         $template->render();
     }
 }

@@ -23,7 +23,9 @@ namespace Dravencms\AdminModule\Components\FileDownload\DownloadForm;
 use Dravencms\Components\BaseControl\BaseControl;
 use Dravencms\Components\BaseForm\BaseFormFactory;
 use Dravencms\Model\FileDownload\Entities\Download;
+use Dravencms\Model\FileDownload\Entities\DownloadTranslation;
 use Dravencms\Model\FileDownload\Repository\DownloadRepository;
+use Dravencms\Model\FileDownload\Repository\DownloadTranslationRepository;
 use Dravencms\Model\Locale\Repository\LocaleRepository;
 use Kdyby\Doctrine\EntityManager;
 use Nette\Application\UI\Form;
@@ -44,6 +46,9 @@ class DownloadForm extends BaseControl
     /** @var DownloadRepository */
     private $downloadRepository;
 
+    /** @var DownloadTranslationRepository */
+    private $downloadTranslationRepository;
+
     /** @var LocaleRepository */
     private $localeRepository;
 
@@ -58,6 +63,7 @@ class DownloadForm extends BaseControl
      * @param BaseFormFactory $baseFormFactory
      * @param EntityManager $entityManager
      * @param DownloadRepository $downloadRepository
+     * @param DownloadTranslationRepository $downloadTranslationRepository
      * @param LocaleRepository $localeRepository
      * @param Download|null $download
      */
@@ -65,6 +71,7 @@ class DownloadForm extends BaseControl
         BaseFormFactory $baseFormFactory,
         EntityManager $entityManager,
         DownloadRepository $downloadRepository,
+        DownloadTranslationRepository $downloadTranslationRepository,
         LocaleRepository $localeRepository,
         Download $download = null
     ) {
@@ -75,25 +82,21 @@ class DownloadForm extends BaseControl
         $this->baseFormFactory = $baseFormFactory;
         $this->entityManager = $entityManager;
         $this->downloadRepository = $downloadRepository;
+        $this->downloadTranslationRepository = $downloadTranslationRepository;
         $this->localeRepository = $localeRepository;
 
 
         if ($this->download) {
             $defaults = [
-                /*'name' => $this->download->getName(),
-                'description' => $this->download->getDescription(),*/
-                'isShowName' => $this->download->isShowName()
+                'isShowName' => $this->download->isShowName(),
+                'identifier' => $this->download->getIdentifier(),
             ];
 
-            $repository = $this->entityManager->getRepository('Gedmo\Translatable\Entity\Translation');
-            $defaults += $repository->findTranslations($this->download);
-
-            $defaultLocale = $this->localeRepository->getDefault();
-            if ($defaultLocale) {
-                $defaults[$defaultLocale->getLanguageCode()]['name'] = $this->download->getName();
-                $defaults[$defaultLocale->getLanguageCode()]['description'] = $this->download->getDescription();
+            foreach ($this->download->getTranslations() AS $translation)
+            {
+                $defaults[$translation->getLocale()->getLanguageCode()]['name'] = $translation->getName();
+                $defaults[$translation->getLocale()->getLanguageCode()]['description'] = $translation->getDescription();
             }
-
         }
         else{
             $defaults = [
@@ -105,7 +108,7 @@ class DownloadForm extends BaseControl
     }
 
     /**
-     * @return \Dravencms\Components\BaseForm
+     * @return \Dravencms\Components\BaseForm\BaseForm
      */
     protected function createComponentForm()
     {
@@ -120,6 +123,8 @@ class DownloadForm extends BaseControl
             $container->addTextArea('description');
         }
 
+        $form->addText('identifier')
+            ->setRequired('Please fill in unique identifier');
         $form->addCheckbox('isShowName');
 
         $form->addSubmit('send');
@@ -136,10 +141,8 @@ class DownloadForm extends BaseControl
     public function editFormValidate(Form $form)
     {
         $values = $form->getValues();
-        foreach ($this->localeRepository->getActive() AS $activeLocale) {
-            if (!$this->downloadRepository->isNameFree($values->{$activeLocale->getLanguageCode()}->name, $activeLocale, $this->download)) {
-                $form->addError('Tento název je již zabrán.');
-            }
+        if (!$this->downloadRepository->isIdentifierFree($values->identifier, $this->download)) {
+            $form->addError('Tento identifier je již zabrán.');
         }
 
         if (!$this->presenter->isAllowed('fileDownload', 'edit')) {
@@ -155,25 +158,34 @@ class DownloadForm extends BaseControl
     {
         $values = $form->getValues();
 
-
         if ($this->download) {
             $download = $this->download;
-            /*$download->setName($values->name);
-            $download->setDescription($values->description);*/
             $download->setIsShowName($values->isShowName);
         } else {
-            $defaultLocale = $this->localeRepository->getDefault();
-            $download = new Download($values->{$defaultLocale->getLanguageCode()}->name, $values->{$defaultLocale->getLanguageCode()}->description, $values->isShowName);
+            $download = new Download($values->identifier, $values->isShowName);
         }
 
-        $repository = $this->entityManager->getRepository('Gedmo\\Translatable\\Entity\\Translation');
+        $this->entityManager->persist($download);
+        $this->entityManager->flush();
 
         foreach ($this->localeRepository->getActive() AS $activeLocale) {
-            $repository->translate($download, 'name', $activeLocale->getLanguageCode(), $values->{$activeLocale->getLanguageCode()}->name)
-                ->translate($download, 'description', $activeLocale->getLanguageCode(), $values->{$activeLocale->getLanguageCode()}->description);
+            if ($downloadTranslation = $this->downloadTranslationRepository->getTranslation($download, $activeLocale))
+            {
+                $downloadTranslation->setName($values->{$activeLocale->getLanguageCode()}->name);
+                $downloadTranslation->setDescription($values->{$activeLocale->getLanguageCode()}->description);
+            }
+            else
+            {
+                $downloadTranslation = new DownloadTranslation(
+                    $download,
+                    $activeLocale,
+                    $values->{$activeLocale->getLanguageCode()}->name,
+                    $values->{$activeLocale->getLanguageCode()}->description
+                );
+            }
+
+            $this->entityManager->persist($downloadTranslation);
         }
-        
-        $this->entityManager->persist($download);
 
         $this->entityManager->flush();
 

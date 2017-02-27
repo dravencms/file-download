@@ -5,13 +5,13 @@
 
 namespace Dravencms\Model\FileDownload\Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Dravencms\Model\File\Entities\StructureFile;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 use Nette;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\Translatable\Translatable;
 use Gedmo\Sortable\Sortable;
 
 /**
@@ -26,8 +26,14 @@ class DownloadFile extends Nette\Object
     use TimestampableEntity;
 
     /**
+     * @var string
+     * @ORM\Column(type="string",length=255,nullable=false, unique=true)
+     */
+    private $identifier;
+
+    /**
      * @var StructureFile
-     * @ORM\ManyToOne(targetEntity="\Dravencms\Model\File\Entities\StructureFile", inversedBy="downloadFiles")
+     * @ORM\ManyToOne(targetEntity="\Dravencms\Model\File\Entities\StructureFile")
      * @ORM\JoinColumn(name="structure_file_id", referencedColumnName="id")
      */
     private $structureFile;
@@ -39,20 +45,6 @@ class DownloadFile extends Nette\Object
      * @ORM\JoinColumn(name="download_id", referencedColumnName="id")
      */
     private $download;
-
-    /**
-     * @var string
-     * @Gedmo\Translatable
-     * @ORM\Column(type="string",length=255,nullable=false)
-     */
-    private $name;
-
-    /**
-     * @var string
-     * @Gedmo\Translatable
-     * @ORM\Column(type="string",length=255,nullable=false)
-     */
-    private $description;
 
     /**
      * @var integer
@@ -68,27 +60,24 @@ class DownloadFile extends Nette\Object
     private $position;
 
     /**
-     * @Gedmo\Locale
-     * Used locale to override Translation listener`s locale
-     * this is not a mapped field of entity metadata, just a simple property
-     * and it is not necessary because globally locale can be set in listener
+     * @var ArrayCollection|DownloadFileTranslation[]
+     * @ORM\OneToMany(targetEntity="DownloadFileTranslation", mappedBy="downloadFile",cascade={"persist", "remove"})
      */
-    private $locale;
+    private $translations;
 
     /**
      * DownloadFile constructor.
      * @param StructureFile $structureFile
      * @param Download $download
-     * @param string $name
-     * @param string $description
+     * @param $identifier
      */
-    public function __construct(StructureFile $structureFile, Download $download, $name, $description)
+    public function __construct(StructureFile $structureFile, Download $download, $identifier)
     {
         $this->structureFile = $structureFile;
         $this->download = $download;
-        $this->name = $name;
-        $this->description = $description;
+        $this->identifier = $identifier;
         $this->downloadCount = 0;
+        $this->translations = new ArrayCollection();
     }
     
     /**
@@ -100,27 +89,19 @@ class DownloadFile extends Nette\Object
     }
 
     /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
      * @param int $downloadCount
      */
     public function setDownloadCount($downloadCount)
     {
         $this->downloadCount = $downloadCount;
+    }
+
+    /**
+     * @param string $identifier
+     */
+    public function setIdentifier($identifier)
+    {
+        $this->identifier = $identifier;
     }
 
     /**
@@ -137,22 +118,6 @@ class DownloadFile extends Nette\Object
     public function getStructureFile()
     {
         return $this->structureFile;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
     }
 
     /**
@@ -177,5 +142,21 @@ class DownloadFile extends Nette\Object
     public function getDownload()
     {
         return $this->download;
+    }
+
+    /**
+     * @return ArrayCollection|DownloadFileTranslation[]
+     */
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentifier()
+    {
+        return $this->identifier;
     }
 }

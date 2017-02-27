@@ -40,7 +40,7 @@ class DownloadCmsRepository implements ICmsComponentRepository
                 $return = [];
                 /** @var Download $download */
                 foreach ($this->downloadRepository->getAll() AS $download) {
-                    $return[] = new CmsActionOption($download->getName(), ['id' => $download->getId()]);
+                    $return[] = new CmsActionOption($download->getIdentifier(), ['id' => $download->getId()]);
                 }
                 break;
 
@@ -55,16 +55,15 @@ class DownloadCmsRepository implements ICmsComponentRepository
     /**
      * @param string $componentAction
      * @param array $parameters
-     * @param ILocale $locale
      * @return null|CmsActionOption
      */
-    public function getActionOption($componentAction, array $parameters, ILocale $locale)
+    public function getActionOption($componentAction, array $parameters)
     {
-        $found = $this->downloadRepository->findTranslatedOneBy($this->downloadRepository, $locale, $parameters);
+        $found = $this->downloadRepository->getOneByParameters($parameters);
 
         if ($found)
         {
-            return new CmsActionOption($found->getName(), $parameters);
+            return new CmsActionOption($found->getIdentifier(), $parameters);
         }
 
         return null;

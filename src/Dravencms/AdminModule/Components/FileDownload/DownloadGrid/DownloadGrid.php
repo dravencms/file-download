@@ -23,8 +23,8 @@ namespace Dravencms\AdminModule\Components\FileDownload\DownloadGrid;
 
 use Dravencms\Components\BaseControl\BaseControl;
 use Dravencms\Components\BaseGrid\BaseGridFactory;
+use Dravencms\Locale\CurrentLocale;
 use Dravencms\Model\FileDownload\Repository\DownloadRepository;
-use Dravencms\Model\Locale\Repository\LocaleRepository;
 use Kdyby\Doctrine\EntityManager;
 
 /**
@@ -44,8 +44,8 @@ class DownloadGrid extends BaseControl
     /** @var EntityManager */
     private $entityManager;
 
-    /** @var LocaleRepository */
-    private $localeRepository;
+    /** @var CurrentLocale */
+    private $currentLocale;
 
     /**
      * @var array
@@ -57,22 +57,27 @@ class DownloadGrid extends BaseControl
      * @param DownloadRepository $downloadRepository
      * @param BaseGridFactory $baseGridFactory
      * @param EntityManager $entityManager
-     * @param LocaleRepository $localeRepository
+     * @param CurrentLocale $currentLocale
      */
-    public function __construct(DownloadRepository $downloadRepository, BaseGridFactory $baseGridFactory, EntityManager $entityManager, LocaleRepository $localeRepository)
+    public function __construct(
+        DownloadRepository $downloadRepository,
+        BaseGridFactory $baseGridFactory,
+        EntityManager $entityManager,
+        CurrentLocale $currentLocale
+    )
     {
         parent::__construct();
 
         $this->baseGridFactory = $baseGridFactory;
         $this->downloadRepository = $downloadRepository;
         $this->entityManager = $entityManager;
-        $this->localeRepository = $localeRepository;
+        $this->currentLocale = $currentLocale;
     }
 
 
     /**
      * @param $name
-     * @return \Dravencms\Components\BaseGrid
+     * @return \Dravencms\Components\BaseGrid\BaseGrid
      */
     public function createComponentGrid($name)
     {
@@ -80,11 +85,11 @@ class DownloadGrid extends BaseControl
 
         $grid->setModel($this->downloadRepository->getDownloadQueryBuilder());
 
-        $grid->addColumnText('name', 'Name')
+        $grid->addColumnText('identifier', 'Identifier')
             ->setFilterText()
             ->setSuggestion();
 
-        $grid->addColumnDate('updatedAt', 'Last edit', $this->localeRepository->getLocalizedDateTimeFormat())
+        $grid->addColumnDate('updatedAt', 'Last edit', $this->currentLocale->getDateTimeFormat())
             ->setSortable()
             ->setFilterDate();
         $grid->getColumn('updatedAt')->cellPrototype->class[] = 'center';
@@ -104,7 +109,7 @@ class DownloadGrid extends BaseControl
                 })
                 ->setIcon('trash-o')
                 ->setConfirm(function ($row) {
-                    return ['Opravdu chcete smazat download %s ?', $row->name];
+                    return ['Opravdu chcete smazat download %s ?', $row->getIdentifier()];
                 });
 
 

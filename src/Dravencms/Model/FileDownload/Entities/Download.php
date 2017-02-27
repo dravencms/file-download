@@ -26,17 +26,9 @@ class Download extends Nette\Object
 
     /**
      * @var string
-     * @Gedmo\Translatable
-     * @ORM\Column(type="string",length=255,nullable=false)
+     * @ORM\Column(type="string",length=255,nullable=false, unique=true)
      */
-    private $name;
-
-    /**
-     * @var string
-     * @Gedmo\Translatable
-     * @ORM\Column(type="string",length=255,nullable=false)
-     */
-    private $description;
+    private $identifier;
 
     /**
      * @var ArrayCollection|DownloadFile[]
@@ -51,41 +43,22 @@ class Download extends Nette\Object
     private $isShowName;
 
     /**
-     * @Gedmo\Locale
-     * Used locale to override Translation listener`s locale
-     * this is not a mapped field of entity metadata, just a simple property
-     * and it is not necessary because globally locale can be set in listener
+     * @var ArrayCollection|DownloadTranslation[]
+     * @ORM\OneToMany(targetEntity="DownloadTranslation", mappedBy="download",cascade={"persist", "remove"})
      */
-    private $locale;
+    private $translations;
 
     /**
      * Download constructor.
-     * @param $name
-     * @param $description
+     * @param $identifier
      * @param bool $isShowName
      */
-    public function __construct($name, $description, $isShowName = false)
+    public function __construct($identifier, $isShowName = false)
     {
-        $this->name = $name;
-        $this->description = $description;
+        $this->identifier = $identifier;
         $this->isShowName = $isShowName;
         $this->downloadFiles = new ArrayCollection();
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
+        $this->translations = new ArrayCollection();
     }
 
     /**
@@ -97,22 +70,6 @@ class Download extends Nette\Object
     }
 
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
      * @return DownloadFile[]|ArrayCollection
      */
     public function getDownloadFiles()
@@ -121,11 +78,36 @@ class Download extends Nette\Object
     }
 
     /**
+     * @param string $identifier
+     */
+    public function setIdentifier($identifier)
+    {
+        $this->identifier = $identifier;
+    }
+    
+
+    /**
      * @return boolean
      */
     public function isShowName()
     {
         return $this->isShowName;
+    }
+
+    /**
+     * @return ArrayCollection|DownloadTranslation[]
+     */
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentifier()
+    {
+        return $this->identifier;
     }
 
 }

@@ -14,8 +14,7 @@ use Dravencms\Model\Locale\Entities\ILocale;
 
 class DownloadRepository
 {
-    use TLocalizedRepository;
-    
+
     /** @var \Kdyby\Doctrine\EntityRepository */
     private $downloadRepository;
 
@@ -51,6 +50,15 @@ class DownloadRepository
     }
 
     /**
+     * @param array $parameters
+     * @return Download|null
+     */
+    public function getOneByParameters(array $parameters)
+    {
+        return $this->downloadRepository->findOneBy($parameters);
+    }
+
+    /**
      * @return \Kdyby\Doctrine\QueryBuilder
      */
     public function getDownloadQueryBuilder()
@@ -69,19 +77,18 @@ class DownloadRepository
     }
 
     /**
-     * @param $name
-     * @param ILocale $locale
+     * @param $identifier
      * @param Download|null $downloadIgnore
-     * @return mixed
+     * @return boolean
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function isNameFree($name, ILocale $locale, Download $downloadIgnore = null)
+    public function isIdentifierFree($identifier, Download $downloadIgnore = null)
     {
         $qb = $this->downloadRepository->createQueryBuilder('d')
             ->select('d')
-            ->where('d.name = :name')
+            ->where('d.identifier = :identifier')
             ->setParameters([
-                'name' => $name
+                'identifier' => $identifier,
             ]);
 
         if ($downloadIgnore)
@@ -91,9 +98,6 @@ class DownloadRepository
         }
 
         $query = $qb->getQuery();
-
-        $query->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, $locale->getLanguageCode());
-
         return (is_null($query->getOneOrNullResult()));
     }
 }

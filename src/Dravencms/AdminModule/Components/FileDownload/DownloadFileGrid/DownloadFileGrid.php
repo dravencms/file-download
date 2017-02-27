@@ -23,9 +23,9 @@ namespace Dravencms\AdminModule\Components\FileDownload\DownloadFileGrid;
 
 use Dravencms\Components\BaseControl\BaseControl;
 use Dravencms\Components\BaseGrid\BaseGridFactory;
+use Dravencms\Locale\CurrentLocale;
 use Dravencms\Model\FileDownload\Entities\Download;
 use Dravencms\Model\FileDownload\Repository\DownloadFileRepository;
-use Dravencms\Model\Locale\Repository\LocaleRepository;
 use Kdyby\Doctrine\EntityManager;
 
 /**
@@ -44,8 +44,8 @@ class DownloadFileGrid extends BaseControl
     /** @var EntityManager */
     private $entityManager;
 
-    /** @var LocaleRepository */
-    private $localeRepository;
+    /** @var CurrentLocale */
+    private $currentLocale;
 
     /** @var Download */
     private $download;
@@ -61,23 +61,29 @@ class DownloadFileGrid extends BaseControl
      * @param DownloadFileRepository $downloadFileRepository
      * @param BaseGridFactory $baseGridFactory
      * @param EntityManager $entityManager
-     * @param LocaleRepository $localeRepository
+     * @param CurrentLocale $currentLocale
      */
-    public function __construct(Download $download, DownloadFileRepository $downloadFileRepository, BaseGridFactory $baseGridFactory, EntityManager $entityManager, LocaleRepository $localeRepository)
+    public function __construct(
+        Download $download,
+        DownloadFileRepository $downloadFileRepository,
+        BaseGridFactory $baseGridFactory,
+        EntityManager $entityManager,
+        CurrentLocale $currentLocale
+    )
     {
         parent::__construct();
 
         $this->baseGridFactory = $baseGridFactory;
         $this->downloadFileRepository = $downloadFileRepository;
         $this->entityManager = $entityManager;
-        $this->localeRepository = $localeRepository;
+        $this->currentLocale = $currentLocale;
         $this->download = $download;
     }
 
 
     /**
      * @param $name
-     * @return \Dravencms\Components\BaseGrid
+     * @return \Dravencms\Components\BaseGrid\BaseGrid
      */
     public function createComponentGrid($name)
     {
@@ -86,7 +92,7 @@ class DownloadFileGrid extends BaseControl
         $grid->setModel($this->downloadFileRepository->getDownloadFileQueryBuilder($this->download));
 
         $grid->setDefaultSort(['position' => 'ASC']);
-        $grid->addColumnText('name', 'Name')
+        $grid->addColumnText('identifier', 'Identifier')
             ->setFilterText()
             ->setSuggestion();
 
@@ -97,7 +103,7 @@ class DownloadFileGrid extends BaseControl
             ->setFilterText()
             ->setSuggestion();
 
-        $grid->getColumn('name')->cellPrototype->class[] = 'center';
+        $grid->getColumn('identifier')->cellPrototype->class[] = 'center';
 
         $grid->addColumnNumber('downloadCount', 'Download count')
             ->setFilterNumber();
@@ -105,7 +111,7 @@ class DownloadFileGrid extends BaseControl
         $grid->getColumn('downloadCount')->cellPrototype->class[] = 'center';
 
 
-        $grid->addColumnDate('updatedAt', 'Last edit', $this->localeRepository->getLocalizedDateTimeFormat())
+        $grid->addColumnDate('updatedAt', 'Last edit', $this->currentLocale->getDateTimeFormat())
             ->setSortable()
             ->setFilterDate();
         $grid->getColumn('updatedAt')->cellPrototype->class[] = 'center';
@@ -131,7 +137,7 @@ class DownloadFileGrid extends BaseControl
                 })
                 ->setIcon('trash-o')
                 ->setConfirm(function ($row) {
-                    return ['Opravdu chcete smazat download file %s ?', $row->name];
+                    return ['Opravdu chcete smazat download file %s ?', $row->getIdentifier()];
                 });
 
 

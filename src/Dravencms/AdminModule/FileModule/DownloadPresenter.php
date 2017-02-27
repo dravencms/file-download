@@ -52,12 +52,12 @@ class DownloadPresenter extends SecuredPresenter
     {
         if ($id) {
             $this->template->h1 = 'Edit download';
-            $carousel = $this->downloadRepository->getOneById($id);
-            if (!$carousel) {
+            $download = $this->downloadRepository->getOneById($id);
+            if (!$download) {
                 $this->error();
             }
 
-            $this->download = $carousel;
+            $this->download = $download;
         } else {
             $this->template->h1 = 'New download';
         }

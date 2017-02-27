@@ -73,21 +73,20 @@ class DownloadFileRepository
     }
 
     /**
-     * @param $name
-     * @param ILocale $locale
+     * @param $identifier
      * @param Download $download
      * @param DownloadFile|null $downloadFileIgnore
      * @return mixed
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function isNameFree($name, ILocale $locale, Download $download, DownloadFile $downloadFileIgnore = null)
+    public function isIdentifierFree($identifier, Download $download, DownloadFile $downloadFileIgnore = null)
     {
         $qb = $this->downloadFileRepository->createQueryBuilder('df')
             ->select('df')
-            ->where('df.name = :name')
+            ->where('df.identifier = :identifier')
             ->andWhere('df.download = :download')
             ->setParameters([
-                'name' => $name,
+                'identifier' => $identifier,
                 'download' => $download
             ]);
 
@@ -98,7 +97,6 @@ class DownloadFileRepository
         }
 
         $query = $qb->getQuery();
-        $query->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, $locale->getLanguageCode());
 
         return (is_null($query->getOneOrNullResult()));
     }

@@ -68,34 +68,29 @@ class Detail extends BaseControl
         $paginator->itemsPerPage = 10;
         $paginator->itemCount = $download->getDownloadFiles()->count();
 
-        $template->downloadTranslation = $this->downloadTranslationRepository->getTranslation($download, $this->currentLocale);
+        $template->download = $download;
+        $template->currentLocale = $this->currentLocale;
 
-        $fileTranslations = [];
-        foreach ($this->downloadFileRepository->getByDownload($download, $paginator->itemsPerPage, $paginator->offset) AS $item)
-        {
-            $fileTranslations[] = $this->downloadFileTranslationRepository->getTranslation($item, $this->currentLocale);
-        }
-        
-        $template->fileTranslations = $fileTranslations;
+        $template->downloadFiles = $this->downloadFileRepository->getByDownload($download, $paginator->itemsPerPage, $paginator->offset);
 
         $template->setFile($this->cmsActionOption->getTemplatePath(__DIR__.'/detail.latte'));
         $template->render();
     }
 
     /**
-     * @param $downloadFileId
+     * @param $downloadFileTranslationId
      */
-    public function handleDownload($downloadFileId)
+    public function handleDownload($downloadFileTranslationId)
     {
-        $downloadFile = $this->downloadFileRepository->getOneById($downloadFileId);
-        if (!$downloadFile)
+        $downloadFileTranslation = $this->downloadFileTranslationRepository->getOneById($downloadFileTranslationId);
+        if (!$downloadFileTranslation)
         {
             $this->presenter->flashMessage('File not found!', 'alert-danger');
         }
         else
         {
-            $this->downloadFileRepository->logDownload($downloadFile);
-            $response = $this->fileStorage->downloadFile($downloadFile->getStructureFile());
+            $this->downloadFileRepository->logDownload($downloadFileTranslation->getDownloadFile());
+            $response = $this->fileStorage->downloadFile($downloadFileTranslation->getStructureFile());
             $this->presenter->sendResponse($response);
         }
     }

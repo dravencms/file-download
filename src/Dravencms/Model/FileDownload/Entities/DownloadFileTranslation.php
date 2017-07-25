@@ -33,6 +33,13 @@ class DownloadFileTranslation extends Nette\Object
     private $name;
 
     /**
+     * @var StructureFile
+     * @ORM\ManyToOne(targetEntity="\Dravencms\Model\File\Entities\StructureFile")
+     * @ORM\JoinColumn(name="structure_file_id", referencedColumnName="id")
+     */
+    private $structureFile;
+    
+    /**
      * @var string
      * @ORM\Column(type="string",length=255,nullable=false)
      */
@@ -54,17 +61,19 @@ class DownloadFileTranslation extends Nette\Object
 
     /**
      * DownloadFileTranslation constructor.
-     * @param string $name
-     * @param string $description
      * @param DownloadFile $downloadFile
      * @param Locale $locale
+     * @param $name
+     * @param $description
+     * @param StructureFile|null $structureFile
      */
-    public function __construct(DownloadFile $downloadFile, Locale $locale, $name, $description)
+    public function __construct(DownloadFile $downloadFile, Locale $locale, $name, $description, StructureFile $structureFile = null)
     {
         $this->name = $name;
         $this->description = $description;
         $this->downloadFile = $downloadFile;
         $this->locale = $locale;
+        $this->structureFile = $structureFile;
     }
 
     /**
@@ -81,6 +90,14 @@ class DownloadFileTranslation extends Nette\Object
     public function setDescription($description)
     {
         $this->description = $description;
+    }
+
+    /**
+     * @param StructureFile $structureFile
+     */
+    public function setStructureFile(StructureFile $structureFile)
+    {
+        $this->structureFile = $structureFile;
     }
 
     /**
@@ -129,5 +146,13 @@ class DownloadFileTranslation extends Nette\Object
     public function getLocale()
     {
         return $this->locale;
+    }
+
+    /**
+     * @return StructureFile
+     */
+    public function getStructureFile()
+    {
+        return $this->structureFile;
     }
 }

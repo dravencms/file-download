@@ -30,9 +30,18 @@ class DownloadFileTranslationRepository
     }
 
     /**
+     * @param $id
+     * @return null|DownloadFileTranslation
+     */
+    public function getOneById($id)
+    {
+        return $this->downloadFileTranslationRepository->find($id);
+    }
+
+    /**
      * @param DownloadFile $downloadFile
      * @param ILocale $locale
-     * @return mixed|null|object
+     * @return null|DownloadFileTranslation
      */
     public function getTranslation(DownloadFile $downloadFile, ILocale $locale)
     {

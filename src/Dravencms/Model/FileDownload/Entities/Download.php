@@ -6,7 +6,9 @@
 namespace Dravencms\Model\FileDownload\Entities;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use Dravencms\Model\Locale\Entities\ILocale;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 use Nette;
@@ -100,6 +102,16 @@ class Download extends Nette\Object
     public function getTranslations()
     {
         return $this->translations;
+    }
+
+    /**
+     * @param ILocale $locale
+     * @return DownloadTranslation
+     */
+    public function getTranslation(ILocale $locale)
+    {
+        $criteria = Criteria::create()->where(Criteria::expr()->eq("locale", $locale));
+        return $this->getTranslations()->matching($criteria)->first();
     }
 
     /**

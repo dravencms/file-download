@@ -6,8 +6,10 @@
 namespace Dravencms\Model\FileDownload\Entities;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Dravencms\Model\File\Entities\StructureFile;
+use Dravencms\Model\Locale\Entities\ILocale;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 use Nette;
@@ -30,14 +32,7 @@ class DownloadFile extends Nette\Object
      * @ORM\Column(type="string",length=255,nullable=false, unique=true)
      */
     private $identifier;
-
-    /**
-     * @var StructureFile
-     * @ORM\ManyToOne(targetEntity="\Dravencms\Model\File\Entities\StructureFile")
-     * @ORM\JoinColumn(name="structure_file_id", referencedColumnName="id")
-     */
-    private $structureFile;
-
+    
     /**
      * @var Download
      * @Gedmo\SortableGroup
@@ -67,25 +62,15 @@ class DownloadFile extends Nette\Object
 
     /**
      * DownloadFile constructor.
-     * @param StructureFile $structureFile
      * @param Download $download
      * @param $identifier
      */
-    public function __construct(StructureFile $structureFile, Download $download, $identifier)
+    public function __construct(Download $download, $identifier)
     {
-        $this->structureFile = $structureFile;
         $this->download = $download;
         $this->identifier = $identifier;
         $this->downloadCount = 0;
         $this->translations = new ArrayCollection();
-    }
-    
-    /**
-     * @param StructureFile $structureFile
-     */
-    public function setStructureFile($structureFile)
-    {
-        $this->structureFile = $structureFile;
     }
 
     /**
@@ -110,14 +95,6 @@ class DownloadFile extends Nette\Object
     public function setPosition($position)
     {
         $this->position = $position;
-    }
-
-    /**
-     * @return StructureFile
-     */
-    public function getStructureFile()
-    {
-        return $this->structureFile;
     }
 
     /**
@@ -150,6 +127,16 @@ class DownloadFile extends Nette\Object
     public function getTranslations()
     {
         return $this->translations;
+    }
+
+    /**
+     * @param ILocale $locale
+     * @return DownloadFileTranslation
+     */
+    public function getTranslation(ILocale $locale)
+    {
+        $criteria = Criteria::create()->where(Criteria::expr()->eq("locale", $locale));
+        return $this->getTranslations()->matching($criteria)->first();
     }
 
     /**

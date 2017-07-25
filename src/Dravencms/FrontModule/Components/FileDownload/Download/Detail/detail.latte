@@ -1,20 +1,23 @@
-<h3 n:if="$downloadTranslation->getDownload()->isShowName()" class="heading-title">{$downloadTranslation->getName()}</h3>
+{var $downloadTranslation = $download->getTranslation($currentLocale)}
+
+<h3 n:if="$download->isShowName()" class="heading-title">{$downloadTranslation->getName()}</h3>
 <div class="news-wrapper" n:snippet="detail">
-    <article n:foreach="$fileTranslations AS $fileTranslation" class="news-item page-row has-divider clearfix row">
+    <article n:foreach="$downloadFiles AS $downloadFile" class="news-item page-row has-divider clearfix row">
+        {var $fileTranslation = $downloadFile->getTranslation($currentLocale)}
         <figure class="thumb file col-md-2 col-sm-3 col-xs-4">
-            {if \Salamek\Files\Models\IFile::TYPE_IMAGE == $fileTranslation->getDownloadFile()->getStructureFile()->getFile()->getType()}
-                <img class="img-responsive" n:img="$fileTranslation->getDownloadFile()->getStructureFile()->getFile(), 122x91" alt="{$fileTranslation->getName()}">
+            {if \Salamek\Files\Models\IFile::TYPE_IMAGE == $fileTranslation->getStructureFile()->getFile()->getType()}
+                <img class="img-responsive" n:img="$fileTranslation->getStructureFile()->getFile(), 122x91" alt="{$fileTranslation->getName()}">
             {else}
-                <img class="img-responsive" src="{$fileTranslation->getDownloadFile()->getStructureFile()->getFile()|fileIcon}" alt="{$fileTranslation->getName()}">
+                <img class="img-responsive" src="{$fileTranslation->getStructureFile()->getFile()|fileIcon}" alt="{$fileTranslation->getName()}">
             {/if}
             <div class="file-name">
-                <h4>{$fileTranslation->getDownloadFile()->getStructureFile()->getBasename()}</h4>
+                <h4>{$fileTranslation->getStructureFile()->getBasename()}</h4>
             </div>
         </figure>
         <div class="details col-md-10 col-sm-9 col-xs-8">
             <h3 class="title"><a href="">{$fileTranslation->getName()}</a></h3>
             <p>{$fileTranslation->getDescription()|noescape}</p>
-            <a class="btn btn-theme read-more" n:href="download!, $fileTranslation->getDownloadFile()->getId()">Stáhnout <small>{$fileTranslation->getDownloadFile()->getStructureFile()->getFile()->getSize()|bytes}</small><i class="fa fa-download"></i></a>
+            <a class="btn btn-theme read-more" n:href="download!, $fileTranslation->getId()">Stáhnout <small>{$fileTranslation->getStructureFile()->getFile()->getSize()|bytes}</small><i class="fa fa-download"></i></a>
         </div>
     </article><!--//news-item-->
 

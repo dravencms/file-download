@@ -29,12 +29,13 @@
                                 </div>
                             </div><!-- col-sm-12 -->
                         </div><!-- row -->
+
+                        {include $fileSelectorPath, filetype => null, form => $form, selectorName => structureFile, uploadName => file, id => $form[$activeLocale->getLanguageCode()]['structureFile']->htmlId}
+
                     </fieldset>
                 {/formContainer}
             </div>
         </div>
-
-        {include $fileSelectorPath, filetype => null, form => $form, selectorName => structureFile, uploadName => file}
 
         <div class="row">
             <div class="col-sm-6">

@@ -90,7 +90,7 @@ class DownloadFileForm extends BaseControl
      * @param StructureRepository $structureRepository
      * @param LocaleRepository $localeRepository
      * @param FileStorage $fileStorage
-     * @param File $file
+     * @param File $fileFile
      * @param Download $download
      * @param DownloadFile|null $file
      */
@@ -127,7 +127,6 @@ class DownloadFileForm extends BaseControl
             
             $defaults = [
                 'position' => $this->file->getPosition(),
-                'structureFile' => $this->file->getStructureFile()->getId(),
                 'identifier' => $this->file->getIdentifier()
             ];
 
@@ -135,6 +134,7 @@ class DownloadFileForm extends BaseControl
             {
                 $defaults[$translation->getLocale()->getLanguageCode()]['name'] = $translation->getName();
                 $defaults[$translation->getLocale()->getLanguageCode()]['description'] = $translation->getDescription();
+                $defaults[$translation->getLocale()->getLanguageCode()]['structureFile'] = ($translation->getStructureFile() ? $translation->getStructureFile()->getId() : null);
             }
 
         }
@@ -159,13 +159,13 @@ class DownloadFileForm extends BaseControl
                 ->addRule(Form::MAX_LENGTH, 'File name is too long.', 255);
 
             $container->addTextArea('description');
+
+            $container->addText('structureFile')
+                ->setType('number');
+
+            $container->addUpload('file');
         }
-
-        $form->addText('structureFile')
-            ->setType('number');
-
-        $form->addUpload('file');
-
+        
         $form->addText('identifier')
             ->setRequired('Please fill in unique identifier');
 
@@ -203,28 +203,13 @@ class DownloadFileForm extends BaseControl
     public function editFormSucceeded(Form $form)
     {
         $values = $form->getValues();
-
-        $structureFile = $this->structureFileRepository->getOneById($values->structureFile);
-
-        /** @var FileUpload $fileUpload */
-        $fileUpload = $values->file;
-        if ($fileUpload->isOk()) {
-            $structureName = 'Download';
-            if (!$structure = $this->structureRepository->getOneByName($structureName)) {
-                $structure = new Structure($structureName);
-                $this->entityManager->persist($structure);
-                $this->entityManager->flush();
-            }
-            $structureFile = $this->fileStorage->processFile($fileUpload, $structure);
-        }
-
+        
         if ($this->file) {
             $file = $this->file;
             $file->setPosition($values->position);
-            $file->setStructureFile($structureFile);
             $file->setIdentifier($values->identifier);
         } else {
-            $file = new DownloadFile($structureFile, $this->download, $values->identifier);
+            $file = new DownloadFile($this->download, $values->identifier);
         }
 
         $this->entityManager->persist($file);
@@ -232,10 +217,27 @@ class DownloadFileForm extends BaseControl
         $this->entityManager->flush();
 
         foreach ($this->localeRepository->getActive() AS $activeLocale) {
+
+            $structureFile = $this->structureFileRepository->getOneById($values->{$activeLocale->getLanguageCode()}->structureFile);
+
+            /** @var FileUpload $fileUpload */
+            $fileUpload = $values->{$activeLocale->getLanguageCode()}->file;
+            if ($fileUpload->isOk()) {
+                $structureName = 'Download';
+                if (!$structure = $this->structureRepository->getOneByName($structureName)) {
+                    $structure = new Structure($structureName);
+                    $this->entityManager->persist($structure);
+                    $this->entityManager->flush();
+                }
+                $structureFile = $this->fileStorage->processFile($fileUpload, $structure);
+            }
+
+
             if ($downloadFileTranslation = $this->downloadFileTranslationRepository->getTranslation($file, $activeLocale))
             {
                 $downloadFileTranslation->setName($values->{$activeLocale->getLanguageCode()}->name);
                 $downloadFileTranslation->setDescription($values->{$activeLocale->getLanguageCode()}->description);
+                $downloadFileTranslation->setStructureFile($structureFile);
             }
             else
             {
@@ -243,7 +245,8 @@ class DownloadFileForm extends BaseControl
                     $file,
                     $activeLocale,
                     $values->{$activeLocale->getLanguageCode()}->name,
-                    $values->{$activeLocale->getLanguageCode()}->description
+                    $values->{$activeLocale->getLanguageCode()}->description,
+                    $structureFile
                 );
             }
 

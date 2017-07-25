@@ -96,13 +96,6 @@ class DownloadFileGrid extends BaseControl
             ->setFilterText()
             ->setSuggestion();
 
-        $grid->addColumnText('structureFile.name', 'File')
-            ->setCustomRender(function($row){
-                return $row->getStructureFile()->getBasename();
-            })
-            ->setFilterText()
-            ->setSuggestion();
-
         $grid->getColumn('identifier')->cellPrototype->class[] = 'center';
 
         $grid->addColumnNumber('downloadCount', 'Download count')

@@ -95,7 +95,7 @@ class DownloadFileTranslation extends Nette\Object
     /**
      * @param StructureFile $structureFile
      */
-    public function setStructureFile(StructureFile $structureFile)
+    public function setStructureFile(StructureFile $structureFile = null)
     {
         $this->structureFile = $structureFile;
     }

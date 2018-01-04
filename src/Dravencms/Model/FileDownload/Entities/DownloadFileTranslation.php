@@ -21,8 +21,9 @@ use Gedmo\Sortable\Sortable;
  * @ORM\Entity
  * @ORM\Table(name="fileDownloadFileTranslation")
  */
-class DownloadFileTranslation extends Nette\Object
+class DownloadFileTranslation
 {
+    use Nette\SmartObject;
     use Identifier;
     use TimestampableEntity;
 

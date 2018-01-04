@@ -2,14 +2,16 @@
 
 namespace Dravencms\FileDownload;
 
+use Nette;
 
 /**
  * Class FileDownload
  * @package Dravencms\FileDownload
  */
-class FileDownload extends \Nette\Object
+class FileDownload
 {
-
+    use Nette\SmartObject;
+    
     public function __construct()
     {
     }

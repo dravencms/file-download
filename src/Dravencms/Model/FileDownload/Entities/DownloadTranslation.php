@@ -20,8 +20,9 @@ use Gedmo\Translatable\Translatable;
  * @ORM\Entity
  * @ORM\Table(name="fileDownloadTranslation")
  */
-class DownloadTranslation extends Nette\Object
+class DownloadTranslation
 {
+    use Nette\SmartObject;
     use Identifier;
     use TimestampableEntity;
 

@@ -23,7 +23,7 @@ namespace Dravencms\AdminModule\Components\FileDownload\DownloadGrid;
 
 use Dravencms\Components\BaseControl\BaseControl;
 use Dravencms\Components\BaseGrid\BaseGridFactory;
-use Dravencms\Locale\CurrentLocale;
+use Dravencms\Locale\CurrentLocaleResolver;
 use Dravencms\Model\FileDownload\Repository\DownloadRepository;
 use Kdyby\Doctrine\EntityManager;
 
@@ -57,13 +57,13 @@ class DownloadGrid extends BaseControl
      * @param DownloadRepository $downloadRepository
      * @param BaseGridFactory $baseGridFactory
      * @param EntityManager $entityManager
-     * @param CurrentLocale $currentLocale
+     * @param CurrentLocaleResolver $currentLocaleResolver
      */
     public function __construct(
         DownloadRepository $downloadRepository,
         BaseGridFactory $baseGridFactory,
         EntityManager $entityManager,
-        CurrentLocale $currentLocale
+        CurrentLocaleResolver $currentLocaleResolver
     )
     {
         parent::__construct();
@@ -71,7 +71,7 @@ class DownloadGrid extends BaseControl
         $this->baseGridFactory = $baseGridFactory;
         $this->downloadRepository = $downloadRepository;
         $this->entityManager = $entityManager;
-        $this->currentLocale = $currentLocale;
+        $this->currentLocale = $currentLocaleResolver->getCurrentLocale();
     }
 
 

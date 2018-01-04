@@ -3,8 +3,7 @@
 namespace Dravencms\FrontModule\Components\FileDownload\Download\Detail;
 
 use Dravencms\Components\BaseControl\BaseControl;
-use Dravencms\Locale\CurrentLocale;
-use Dravencms\Model\FileDownload\Entities\DownloadFileTranslation;
+use Dravencms\Locale\CurrentLocaleResolver;
 use Dravencms\Model\FileDownload\Repository\DownloadFileRepository;
 use Dravencms\Model\FileDownload\Repository\DownloadFileTranslationRepository;
 use Dravencms\Model\FileDownload\Repository\DownloadRepository;
@@ -36,13 +35,23 @@ class Detail extends BaseControl
     /** @var FileStorage */
     private $fileStorage;
 
+    /**
+     * Detail constructor.
+     * @param ICmsActionOption $cmsActionOption
+     * @param DownloadRepository $downloadRepository
+     * @param DownloadTranslationRepository $downloadTranslationRepository
+     * @param DownloadFileRepository $downloadFileRepository
+     * @param DownloadFileTranslationRepository $downloadFileTranslationRepository
+     * @param CurrentLocaleResolver $currentLocaleResolver
+     * @param FileStorage $fileStorage
+     */
     public function __construct(
         ICmsActionOption $cmsActionOption,
         DownloadRepository $downloadRepository,
         DownloadTranslationRepository $downloadTranslationRepository,
         DownloadFileRepository $downloadFileRepository,
         DownloadFileTranslationRepository $downloadFileTranslationRepository,
-        CurrentLocale $currentLocale,
+        CurrentLocaleResolver $currentLocaleResolver,
         FileStorage $fileStorage
     )
     {
@@ -53,7 +62,7 @@ class Detail extends BaseControl
         $this->downloadTranslationRepository = $downloadTranslationRepository;
         $this->downloadFileTranslationRepository = $downloadFileTranslationRepository;
         $this->fileStorage = $fileStorage;
-        $this->currentLocale = $currentLocale;
+        $this->currentLocale = $currentLocaleResolver->getCurrentLocale();
     }
 
 

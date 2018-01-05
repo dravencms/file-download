@@ -26,6 +26,8 @@ use Dravencms\Components\BaseGrid\BaseGridFactory;
 use Dravencms\Locale\CurrentLocaleResolver;
 use Dravencms\Model\FileDownload\Repository\DownloadRepository;
 use Kdyby\Doctrine\EntityManager;
+use Ublaboo\DataGrid\Column\ColumnText;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Description of DownloadGrid
@@ -79,61 +81,74 @@ class DownloadGrid extends BaseControl
      * @param $name
      * @return \Dravencms\Components\BaseGrid\BaseGrid
      */
-    public function createComponentGrid($name)
+    public function createComponentDataGrid($name)
     {
+        /** @var DataGrid $grid */
         $grid = $this->baseGridFactory->create($this, $name);
 
-        $grid->setModel($this->downloadRepository->getDownloadQueryBuilder());
+        $grid->setDataSource($this->downloadRepository->getDownloadQueryBuilder());
 
-        $grid->addColumnText('identifier', 'Identifier')
-            ->setFilterText()
-            ->setSuggestion();
 
-        $grid->addColumnDate('updatedAt', 'Last edit', $this->currentLocale->getDateTimeFormat())
+        $grid->addColumnText('identifier', 'Identifier', 'identifier')
+            ->setSortable()
+            ->setFilterText();
+
+        $grid->addColumnDateTime('updatedAt', 'Last edit')
+            ->addAttributes(['class' => 'text-center'])
+            ->setFormat($this->currentLocale->getDateTimeFormat())
             ->setSortable()
             ->setFilterDate();
-        $grid->getColumn('updatedAt')->cellPrototype->class[] = 'center';
-        
-        if ($this->presenter->isAllowed('fileDownload', 'edit')) {
-            $grid->addActionHref('files', 'Files')
-                ->setIcon('folder-open');
 
-            $grid->addActionHref('edit', 'Upravit')
-                ->setIcon('pencil');
+
+        if ($this->presenter->isAllowed('fileDownload', 'edit')) {
+
+            $grid->addAction('files', 'Files', 'files!')
+                ->setIcon('folder-open')
+                ->setTitle('Files')
+                ->setClass('btn btn-xs btn-primary');
+
+            $grid->addAction('edit', '', 'edit')
+                ->setIcon('pencil')
+                ->setTitle('Upravit')
+                ->setClass('btn btn-xs btn-primary');
         }
 
         if ($this->presenter->isAllowed('fileDownload', 'delete')) {
-            $grid->addActionHref('delete', 'Smazat', 'delete!')
-                ->setCustomHref(function($row){
-                    return $this->link('delete!', $row->getId());
-                })
-                ->setIcon('trash-o')
-                ->setConfirm(function ($row) {
-                    return ['Opravdu chcete smazat download %s ?', $row->getIdentifier()];
-                });
-
-
-            $operations = ['delete' => 'Smazat'];
-            $grid->setOperation($operations, [$this, 'gridOperationsHandler'])
-                ->setConfirm('delete', 'Opravu chcete smazat %i downloads ?');
+            $grid->addAction('delete', '', 'delete!')
+                ->setIcon('trash')
+                ->setTitle('Smazat')
+                ->setClass('btn btn-xs btn-danger ajax')
+                ->setConfirm('Do you really want to delete row %s?', 'identifier');
         }
-        $grid->setExport();
+
+        $grid->addGroupAction('Smazat')->onSelect[] = [$this, 'gridGroupActionDelete'];
+
 
         return $grid;
     }
 
     /**
-     * @param $action
-     * @param $ids
+     * @param array $ids
      */
-    public function gridOperationsHandler($action, $ids)
+    public function gridGroupActionDelete(array $ids)
     {
-        switch ($action)
-        {
-            case 'delete':
-                $this->handleDelete($ids);
-                break;
+        $this->handleDelete($ids);
+
+        if ($this->isAjax()) {
+            $this['grid']->reload();
+        } else {
+            $this->redirect('this');
         }
+    }
+
+    public function handleFiles($id)
+    {
+        $this->presenter->redirect('files', $id);
+    }
+
+    public function handleEdit($id)
+    {
+        $this->presenter->redirect('edit', $id);
     }
 
     /**

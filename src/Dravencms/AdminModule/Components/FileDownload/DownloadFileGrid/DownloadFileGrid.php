@@ -27,6 +27,7 @@ use Dravencms\Locale\CurrentLocaleResolver;
 use Dravencms\Model\FileDownload\Entities\Download;
 use Dravencms\Model\FileDownload\Repository\DownloadFileRepository;
 use Kdyby\Doctrine\EntityManager;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Description of DownloadFileGrid
@@ -87,74 +88,83 @@ class DownloadFileGrid extends BaseControl
      */
     public function createComponentGrid($name)
     {
+        /** @var DataGrid $grid */
         $grid = $this->baseGridFactory->create($this, $name);
 
-        $grid->setModel($this->downloadFileRepository->getDownloadFileQueryBuilder($this->download));
-
         $grid->setDefaultSort(['position' => 'ASC']);
-        $grid->addColumnText('identifier', 'Identifier')
-            ->setFilterText()
-            ->setSuggestion();
 
-        $grid->getColumn('identifier')->cellPrototype->class[] = 'center';
+        $grid->setDataSource($this->downloadFileRepository->getDownloadFileQueryBuilder($this->download));
+
+
+        $grid->addColumnText('identifier', 'Identifier', 'identifier')
+            ->setSortable()
+            ->setFilterText();
 
         $grid->addColumnNumber('downloadCount', 'Download count')
-            ->setFilterNumber();
+            ->setAlign('center')
+            ->setFilterRange();
 
-        $grid->getColumn('downloadCount')->cellPrototype->class[] = 'center';
-
-
-        $grid->addColumnDate('updatedAt', 'Last edit', $this->currentLocale->getDateTimeFormat())
+        $grid->addColumnDateTime('updatedAt', 'Last edit')
+            ->addAttributes(['class' => 'text-center'])
+            ->setFormat($this->currentLocale->getDateTimeFormat())
             ->setSortable()
             ->setFilterDate();
-        $grid->getColumn('updatedAt')->cellPrototype->class[] = 'center';
 
         $grid->addColumnNumber('position', 'Position')
-            ->setFilterNumber()
-            ->setSuggestion();
+            ->setAlign('center')
+            ->setFilterRange();
 
-        $grid->getColumn('position')->cellPrototype->class[] = 'center';
 
         if ($this->presenter->isAllowed('fileDownload', 'edit')) {
-            $grid->addActionHref('editFile', 'Upravit')
-                ->setCustomHref(function($row){
-                    return $this->presenter->link('editFile', ['downloadId' => $row->getDownload()->getId(), 'fileId' => $row->getId()]);
-                })
-                ->setIcon('pencil');
+            
+            $grid->addAction('edit', '', 'edit', ['fileId' => 'id', 'downloadId' => 'download.id'])
+                ->setIcon('pencil')
+                ->setTitle('Upravit')
+                ->setClass('btn btn-xs btn-primary');
         }
 
         if ($this->presenter->isAllowed('fileDownload', 'delete')) {
-            $grid->addActionHref('delete', 'Smazat', 'delete!')
-                ->setCustomHref(function($row){
-                    return $this->link('delete!', $row->getId());
-                })
-                ->setIcon('trash-o')
-                ->setConfirm(function ($row) {
-                    return ['Opravdu chcete smazat download file %s ?', $row->getIdentifier()];
-                });
-
-
-            $operations = ['delete' => 'Smazat'];
-            $grid->setOperation($operations, [$this, 'gridOperationsHandler'])
-                ->setConfirm('delete', 'Opravu chcete smazat %i download files ?');
+            $grid->addAction('delete', '', 'delete!')
+                ->setIcon('trash')
+                ->setTitle('Smazat')
+                ->setClass('btn btn-xs btn-danger ajax')
+                ->setConfirm('Do you really want to delete row %s?', 'identifier');
         }
-        $grid->setExport();
+
+        $grid->addGroupAction('Smazat')->onSelect[] = [$this, 'gridGroupActionDelete'];
 
         return $grid;
     }
 
     /**
-     * @param $action
-     * @param $ids
+     * @param array $ids
      */
-    public function gridOperationsHandler($action, $ids)
+    public function gridGroupActionDelete(array $ids)
     {
-        switch ($action)
-        {
-            case 'delete':
-                $this->handleDelete($ids);
-                break;
+        $this->handleDelete($ids);
+
+        if ($this->isAjax()) {
+            $this['grid']->reload();
+        } else {
+            $this->redirect('this');
         }
+    }
+
+    /**
+     * @param $id
+     */
+    public function handleFiles($id)
+    {
+        $this->presenter->redirect('files', $id);
+    }
+
+    /**
+     * @param $fileId
+     * @param $downloadId
+     */
+    public function handleEdit($fileId, $downloadId)
+    {
+        $this->presenter->redirect('editFile', ['downloadId' => $downloadId, 'fileId' => $fileId]);
     }
 
     /**

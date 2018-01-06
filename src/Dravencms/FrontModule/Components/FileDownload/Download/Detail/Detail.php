@@ -71,16 +71,26 @@ class Detail extends BaseControl
         $template = $this->template;
         $download = $this->downloadRepository->getOneById($this->cmsActionOption->getParameter('id'));
 
-        $visualPaginator = $this['visualPaginator'];
+        $pagination = $download->getPagination();
+        if ($pagination)
+        {
+            $visualPaginator = $this['visualPaginator'];
 
-        $paginator = $visualPaginator->getPaginator();
-        $paginator->itemsPerPage = 10;
-        $paginator->itemCount = $download->getDownloadFiles()->count();
+            $paginator = $visualPaginator->getPaginator();
+            $paginator->itemsPerPage = $pagination;
+            $paginator->itemCount = $download->getDownloadFiles()->count();
 
+            $template->downloadFiles = $this->downloadFileRepository->getByDownload($download, $paginator->itemsPerPage, $paginator->offset);
+        }
+        else
+        {
+            $template->downloadFiles = $download->getDownloadFiles();
+        }
+        
         $template->download = $download;
         $template->currentLocale = $this->currentLocale;
 
-        $template->downloadFiles = $this->downloadFileRepository->getByDownload($download, $paginator->itemsPerPage, $paginator->offset);
+
 
         $template->setFile($this->cmsActionOption->getTemplatePath(__DIR__.'/detail.latte'));
         $template->render();

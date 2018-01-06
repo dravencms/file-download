@@ -40,6 +40,12 @@ class Download
     private $downloadFiles;
 
     /**
+     * @var integer
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $pagination;
+
+    /**
      * @var boolean
      * @ORM\Column(type="boolean", nullable=false)
      */
@@ -54,11 +60,13 @@ class Download
     /**
      * Download constructor.
      * @param $identifier
+     * @param null|integer $pagination
      * @param bool $isShowName
      */
-    public function __construct($identifier, $isShowName = false)
+    public function __construct($identifier, $pagination = null, $isShowName = false)
     {
         $this->identifier = $identifier;
+        $this->pagination = $pagination;
         $this->isShowName = $isShowName;
         $this->downloadFiles = new ArrayCollection();
         $this->translations = new ArrayCollection();
@@ -70,6 +78,14 @@ class Download
     public function setIsShowName($isShowName)
     {
         $this->isShowName = $isShowName;
+    }
+
+    /**
+     * @param integer $pagination
+     */
+    public function setPagination($pagination = null)
+    {
+        $this->pagination = $pagination;
     }
 
     /**
@@ -123,4 +139,11 @@ class Download
         return $this->identifier;
     }
 
+    /**
+     * @return int|null
+     */
+    public function getPagination()
+    {
+        return $this->pagination;
+    }
 }

@@ -90,6 +90,7 @@ class DownloadForm extends BaseControl
             $defaults = [
                 'isShowName' => $this->download->isShowName(),
                 'identifier' => $this->download->getIdentifier(),
+                'pagination' => $this->download->getPagination() 
             ];
 
             foreach ($this->download->getTranslations() AS $translation)
@@ -125,6 +126,9 @@ class DownloadForm extends BaseControl
 
         $form->addText('identifier')
             ->setRequired('Please fill in unique identifier');
+
+        $form->addText('pagination');
+
         $form->addCheckbox('isShowName');
 
         $form->addSubmit('send');
@@ -161,8 +165,9 @@ class DownloadForm extends BaseControl
         if ($this->download) {
             $download = $this->download;
             $download->setIsShowName($values->isShowName);
+            $download->setPagination($values->pagination ? $values->pagination : null);
         } else {
-            $download = new Download($values->identifier, $values->isShowName);
+            $download = new Download($values->identifier, $values->pagination ? $values->pagination : null, $values->isShowName);
         }
 
         $this->entityManager->persist($download);

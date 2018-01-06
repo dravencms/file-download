@@ -129,9 +129,9 @@ class DownloadFileGrid extends BaseControl
                 ->setTitle('Smazat')
                 ->setClass('btn btn-xs btn-danger ajax')
                 ->setConfirm('Do you really want to delete row %s?', 'identifier');
+            
+            $grid->addGroupAction('Smazat')->onSelect[] = [$this, 'gridGroupActionDelete'];
         }
-
-        $grid->addGroupAction('Smazat')->onSelect[] = [$this, 'gridGroupActionDelete'];
 
         return $grid;
     }
@@ -142,29 +142,6 @@ class DownloadFileGrid extends BaseControl
     public function gridGroupActionDelete(array $ids)
     {
         $this->handleDelete($ids);
-
-        if ($this->isAjax()) {
-            $this['grid']->reload();
-        } else {
-            $this->redirect('this');
-        }
-    }
-
-    /**
-     * @param $id
-     */
-    public function handleFiles($id)
-    {
-        $this->presenter->redirect('files', $id);
-    }
-
-    /**
-     * @param $fileId
-     * @param $downloadId
-     */
-    public function handleEdit($fileId, $downloadId)
-    {
-        $this->presenter->redirect('editFile', ['downloadId' => $downloadId, 'fileId' => $fileId]);
     }
 
     /**
@@ -180,8 +157,13 @@ class DownloadFileGrid extends BaseControl
         }
 
         $this->entityManager->flush();
-
-        $this->onDelete();
+        
+        
+        if ($this->presenter->isAjax()) {
+            $this['grid']->reload();
+        } else {
+            $this->onDelete();
+        }
     }
 
     public function render()

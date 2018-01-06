@@ -142,12 +142,6 @@ class DownloadFileGrid extends BaseControl
     public function gridGroupActionDelete(array $ids)
     {
         $this->handleDelete($ids);
-
-        if ($this->isAjax()) {
-            $this['grid']->reload();
-        } else {
-            $this->redirect('this');
-        }
     }
 
     /**
@@ -163,8 +157,13 @@ class DownloadFileGrid extends BaseControl
         }
 
         $this->entityManager->flush();
-
-        $this->onDelete();
+        
+        
+        if ($this->presenter->isAjax()) {
+            $this['grid']->reload();
+        } else {
+            $this->onDelete();
+        }
     }
 
     public function render()

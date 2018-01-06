@@ -102,7 +102,7 @@ class DownloadGrid extends BaseControl
 
         if ($this->presenter->isAllowed('fileDownload', 'edit')) {
 
-            $grid->addAction('files', 'Files', 'files!')
+            $grid->addAction('files', 'Files', 'files')
                 ->setIcon('folder-open')
                 ->setTitle('Files')
                 ->setClass('btn btn-xs btn-primary');

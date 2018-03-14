@@ -117,7 +117,7 @@ class DownloadFileGrid extends BaseControl
 
         if ($this->presenter->isAllowed('fileDownload', 'edit')) {
             
-            $grid->addAction('edit', '', 'edit', ['fileId' => 'id', 'downloadId' => 'download.id'])
+            $grid->addAction('editFile', '', 'editFile', ['fileId' => 'id', 'downloadId' => 'download.id'])
                 ->setIcon('pencil')
                 ->setTitle('Upravit')
                 ->setClass('btn btn-xs btn-primary');

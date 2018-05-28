@@ -31,6 +31,11 @@
       "configuration": {
         "extensions": {
           "fileDownload": "Dravencms\\FileDownload\\DI\\FileDownloadExtension"
+        },
+        "doctrine":{
+          "metadata": {
+            "Dravencms\\Model\\FileDownload": "%appDir%/../vendor/dravencms/file-download/src/Dravencms/Model/FileDownload"
+          }
         }
       }
     }

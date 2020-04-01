@@ -8,7 +8,7 @@ namespace Dravencms\Model\FileDownload\Entities;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
-use Dravencms\Model\File\Entities\StructureFile;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Dravencms\Model\Locale\Entities\ILocale;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
@@ -17,10 +17,14 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sortable\Sortable;
 
 /**
- * Class Download
+ * Class DownloadFile
  * @package Dravencms\Model\File\Entities
  * @ORM\Entity
- * @ORM\Table(name="fileDownloadFile")
+ * @ORM\Table(name="fileDownloadFile",
+ *      uniqueConstraints={
+ *        @UniqueConstraint(name="identifier_unique",
+ *            columns={"identifier", "download_id"})
+ *    }))
  */
 class DownloadFile
 {

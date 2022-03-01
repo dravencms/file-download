@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Copyright (C) 2016 Adam Schubert <adam.schubert@sg1-game.net>.
  */
@@ -10,10 +10,9 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Dravencms\Model\Locale\Entities\ILocale;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
+use Dravencms\Database\Attributes\Identifier;
 use Nette;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\Translatable\Translatable;
 
 /**
  * Class Download
@@ -63,7 +62,7 @@ class Download
      * @param null|integer $pagination
      * @param bool $isShowName
      */
-    public function __construct($identifier, $pagination = null, $isShowName = false)
+    public function __construct(string $identifier, int $pagination = null, bool $isShowName = false)
     {
         $this->identifier = $identifier;
         $this->pagination = $pagination;
@@ -75,7 +74,7 @@ class Download
     /**
      * @param boolean $isShowName
      */
-    public function setIsShowName($isShowName)
+    public function setIsShowName(bool $isShowName): void
     {
         $this->isShowName = $isShowName;
     }
@@ -83,7 +82,7 @@ class Download
     /**
      * @param integer $pagination
      */
-    public function setPagination($pagination = null)
+    public function setPagination(int $pagination = null): void
     {
         $this->pagination = $pagination;
     }
@@ -99,7 +98,7 @@ class Download
     /**
      * @param string $identifier
      */
-    public function setIdentifier($identifier)
+    public function setIdentifier(string $identifier): void
     {
         $this->identifier = $identifier;
     }
@@ -108,7 +107,7 @@ class Download
     /**
      * @return boolean
      */
-    public function isShowName()
+    public function isShowName(): bool
     {
         return $this->isShowName;
     }
@@ -134,7 +133,7 @@ class Download
     /**
      * @return string
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return $this->identifier;
     }
@@ -142,7 +141,7 @@ class Download
     /**
      * @return int|null
      */
-    public function getPagination()
+    public function getPagination(): ?int
     {
         return $this->pagination;
     }

@@ -15,8 +15,10 @@
     }
   ],
   "require": {
-    "dravencms/file": "^v1.0",
-    "dravencms/structure": "^v1.0"
+    "dravencms/file": "^v2.0"
+  },
+  "suggest": {
+    "dravencms/structure": "Allows file download components to be used in cms"
   },
   "require-dev": {
     "nette/tester": "@dev"
@@ -28,16 +30,7 @@
   },
   "extra": {
     "dravencms": {
-      "configuration": {
-        "extensions": {
-          "fileDownload": "Dravencms\\FileDownload\\DI\\FileDownloadExtension"
-        },
-        "doctrine":{
-          "metadata": {
-            "Dravencms\\Model\\FileDownload": "%appDir%/../vendor/dravencms/file-download/src/Dravencms/Model/FileDownload"
-          }
-        }
-      }
+      "configuration": "dravencms.config.neon"
     }
   }
 }

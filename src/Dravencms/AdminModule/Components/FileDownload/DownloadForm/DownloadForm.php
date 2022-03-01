@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * Copyright (C) 2016 Adam Schubert <adam.schubert@sg1-game.net>.
  *
@@ -27,8 +27,8 @@ use Dravencms\Model\FileDownload\Entities\DownloadTranslation;
 use Dravencms\Model\FileDownload\Repository\DownloadRepository;
 use Dravencms\Model\FileDownload\Repository\DownloadTranslationRepository;
 use Dravencms\Model\Locale\Repository\LocaleRepository;
-use Kdyby\Doctrine\EntityManager;
-use Nette\Application\UI\Form;
+use Dravencms\Database\EntityManager;
+use Dravencms\Components\BaseForm\Form;
 
 /**
  * Description of DownloadForm
@@ -75,8 +75,6 @@ class DownloadForm extends BaseControl
         LocaleRepository $localeRepository,
         Download $download = null
     ) {
-        parent::__construct();
-
         $this->download = $download;
 
         $this->baseFormFactory = $baseFormFactory;
@@ -109,9 +107,9 @@ class DownloadForm extends BaseControl
     }
 
     /**
-     * @return \Dravencms\Components\BaseForm\BaseForm
+     * @return Form
      */
-    protected function createComponentForm()
+    protected function createComponentForm(): Form
     {
         $form = $this->baseFormFactory->create();
 
@@ -127,7 +125,7 @@ class DownloadForm extends BaseControl
         $form->addText('identifier')
             ->setRequired('Please fill in unique identifier');
 
-        $form->addText('pagination');
+        $form->addNumber('pagination');
 
         $form->addCheckbox('isShowName');
 
@@ -142,7 +140,7 @@ class DownloadForm extends BaseControl
     /**
      * @param Form $form
      */
-    public function editFormValidate(Form $form)
+    public function editFormValidate(Form $form): void
     {
         $values = $form->getValues();
         if (!$this->downloadRepository->isIdentifierFree($values->identifier, $this->download)) {
@@ -158,7 +156,7 @@ class DownloadForm extends BaseControl
      * @param Form $form
      * @throws \Exception
      */
-    public function editFormSucceeded(Form $form)
+    public function editFormSucceeded(Form $form): void
     {
         $values = $form->getValues();
 
@@ -198,7 +196,7 @@ class DownloadForm extends BaseControl
     }
 
 
-    public function render()
+    public function render(): void
     {
         $template = $this->template;
         $template->activeLocales = $this->localeRepository->getActive();

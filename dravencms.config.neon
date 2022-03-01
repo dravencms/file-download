@@ -1,0 +1,6 @@
+extensions:
+    dravencms.fileDownload: Dravencms\FileDownload\DI\FileDownloadExtension
+
+nettrine.orm.annotations:
+    mapping:
+        Dravencms\Model\FileDownload: %appDir%/../vendor/dravencms/file-download/src/Dravencms/Model/FileDownload/Entities

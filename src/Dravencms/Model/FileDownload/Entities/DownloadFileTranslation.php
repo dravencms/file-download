@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Copyright (C) 2016 Adam Schubert <adam.schubert@sg1-game.net>.
  */
@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Dravencms\Model\File\Entities\StructureFile;
 use Dravencms\Model\Locale\Entities\Locale;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
+use Dravencms\Database\Attributes\Identifier;
 use Nette;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Translatable\Translatable;
@@ -68,7 +68,7 @@ class DownloadFileTranslation
      * @param $description
      * @param StructureFile|null $structureFile
      */
-    public function __construct(DownloadFile $downloadFile, Locale $locale, $name, $description, StructureFile $structureFile = null)
+    public function __construct(DownloadFile $downloadFile, Locale $locale, string $name, string $description, StructureFile $structureFile = null)
     {
         $this->name = $name;
         $this->description = $description;
@@ -80,7 +80,7 @@ class DownloadFileTranslation
     /**
      * @param string $name
      */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
@@ -88,7 +88,7 @@ class DownloadFileTranslation
     /**
      * @param string $description
      */
-    public function setDescription($description)
+    public function setDescription(string $description): void
     {
         $this->description = $description;
     }
@@ -96,7 +96,7 @@ class DownloadFileTranslation
     /**
      * @param StructureFile $structureFile
      */
-    public function setStructureFile(StructureFile $structureFile = null)
+    public function setStructureFile(StructureFile $structureFile = null): void
     {
         $this->structureFile = $structureFile;
     }
@@ -104,7 +104,7 @@ class DownloadFileTranslation
     /**
      * @param DownloadFile $downloadFile
      */
-    public function setDownloadFile($downloadFile)
+    public function setDownloadFile(DownloadFile $downloadFile): void
     {
         $this->downloadFile = $downloadFile;
     }
@@ -112,7 +112,7 @@ class DownloadFileTranslation
     /**
      * @param Locale $locale
      */
-    public function setLocale(Locale $locale)
+    public function setLocale(Locale $locale): void
     {
         $this->locale = $locale;
     }
@@ -120,7 +120,7 @@ class DownloadFileTranslation
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -128,7 +128,7 @@ class DownloadFileTranslation
     /**
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -136,7 +136,7 @@ class DownloadFileTranslation
     /**
      * @return DownloadFile
      */
-    public function getDownloadFile()
+    public function getDownloadFile(): DownloadFile
     {
         return $this->downloadFile;
     }
@@ -144,7 +144,7 @@ class DownloadFileTranslation
     /**
      * @return Locale
      */
-    public function getLocale()
+    public function getLocale(): Locale
     {
         return $this->locale;
     }
@@ -152,7 +152,7 @@ class DownloadFileTranslation
     /**
      * @return StructureFile
      */
-    public function getStructureFile()
+    public function getStructureFile(): StructureFile
     {
         return $this->structureFile;
     }

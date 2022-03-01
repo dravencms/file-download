@@ -1,21 +1,16 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Copyright (C) 2016 Adam Schubert <adam.schubert@sg1-game.net>.
  */
 
 namespace Dravencms\Model\FileDownload\Repository;
 
-use Dravencms\Locale\TLocalizedRepository;
 use Dravencms\Model\FileDownload\Entities\Download;
-use Gedmo\Translatable\TranslatableListener;
-use Kdyby\Doctrine\EntityManager;
-use Nette;
-use Dravencms\Model\Locale\Entities\ILocale;
+use Dravencms\Database\EntityManager;
 
 class DownloadRepository
 {
-
-    /** @var \Kdyby\Doctrine\EntityRepository */
+    /** @var \Doctrine\Persistence\ObjectRepository|Download */
     private $downloadRepository;
 
     /** @var EntityManager */
@@ -33,9 +28,9 @@ class DownloadRepository
 
     /**
      * @param $id
-     * @return mixed|null|Download
+     * @return null|Download
      */
-    public function getOneById($id)
+    public function getOneById(int $id): ?Download
     {
         return $this->downloadRepository->find($id);
     }
@@ -53,7 +48,7 @@ class DownloadRepository
      * @param array $parameters
      * @return Download|null
      */
-    public function getOneByParameters(array $parameters)
+    public function getOneByParameters(array $parameters): ?Download
     {
         return $this->downloadRepository->findOneBy($parameters);
     }
@@ -82,7 +77,7 @@ class DownloadRepository
      * @return boolean
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function isIdentifierFree($identifier, Download $downloadIgnore = null)
+    public function isIdentifierFree(string $identifier, Download $downloadIgnore = null): bool
     {
         $qb = $this->downloadRepository->createQueryBuilder('d')
             ->select('d')

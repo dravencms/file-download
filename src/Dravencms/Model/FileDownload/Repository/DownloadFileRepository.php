@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Copyright (C) 2016 Adam Schubert <adam.schubert@sg1-game.net>.
  */
@@ -7,14 +7,12 @@ namespace Dravencms\Model\FileDownload\Repository;
 
 use Dravencms\Model\FileDownload\Entities\Download;
 use Dravencms\Model\FileDownload\Entities\DownloadFile;
-use Gedmo\Translatable\TranslatableListener;
-use Kdyby\Doctrine\EntityManager;
-use Nette;
-use Salamek\Cms\Models\ILocale;
+use Dravencms\Database\EntityManager;
+
 
 class DownloadFileRepository
 {
-    /** @var \Kdyby\Doctrine\EntityRepository */
+    /** @var \Doctrine\Persistence\ObjectRepository|DownloadFile */
     private $downloadFileRepository;
 
     /** @var EntityManager */
@@ -32,9 +30,9 @@ class DownloadFileRepository
 
     /**
      * @param $id
-     * @return mixed|null|DownloadFile
+     * @return null|DownloadFile
      */
-    public function getOneById($id)
+    public function getOneById(int $id): ?DownloadFile
     {
         return $this->downloadFileRepository->find($id);
     }
@@ -52,9 +50,9 @@ class DownloadFileRepository
      * @param Download $download
      * @param null $limit
      * @param null $offset
-     * @return array
+     * @return DownloadFile[]
      */
-    public function getByDownload(Download $download, $limit = null, $offset = null)
+    public function getByDownload(Download $download, int $limit = null, int $offset = null)
     {
         return $this->downloadFileRepository->findBy(['download' => $download],[], $limit, $offset);
     }
@@ -76,10 +74,10 @@ class DownloadFileRepository
      * @param $identifier
      * @param Download $download
      * @param DownloadFile|null $downloadFileIgnore
-     * @return mixed
+     * @return bool
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function isIdentifierFree($identifier, Download $download, DownloadFile $downloadFileIgnore = null)
+    public function isIdentifierFree(string $identifier, Download $download, DownloadFile $downloadFileIgnore = null): bool
     {
         $qb = $this->downloadFileRepository->createQueryBuilder('df')
             ->select('df')
@@ -105,7 +103,7 @@ class DownloadFileRepository
      * @param DownloadFile $downloadFile
      * @throws \Exception
      */
-    public function logDownload(DownloadFile $downloadFile)
+    public function logDownload(DownloadFile $downloadFile): void
     {
         $downloadFile->setDownloadCount($downloadFile->getDownloadCount() + 1);
         $this->entityManager->persist($downloadFile);

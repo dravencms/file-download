@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Copyright (C) 2016 Adam Schubert <adam.schubert@sg1-game.net>.
  */
@@ -9,10 +9,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Dravencms\Model\Locale\Entities\Locale;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
+use Dravencms\Database\Attributes\Identifier;
 use Nette;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\Translatable\Translatable;
 
 /**
  * Class DownloadTranslation
@@ -59,7 +58,7 @@ class DownloadTranslation
      * @param Download $download
      * @param Locale $locale
      */
-    public function __construct(Download $download, Locale $locale, $name, $description)
+    public function __construct(Download $download, Locale $locale, string $name, string $description)
     {
         $this->name = $name;
         $this->description = $description;
@@ -70,7 +69,7 @@ class DownloadTranslation
     /**
      * @param string $name
      */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
@@ -78,7 +77,7 @@ class DownloadTranslation
     /**
      * @param string $description
      */
-    public function setDescription($description)
+    public function setDescription(string $description): void
     {
         $this->description = $description;
     }
@@ -86,7 +85,7 @@ class DownloadTranslation
     /**
      * @param Download $download
      */
-    public function setDownload($download)
+    public function setDownload(Download $download): void
     {
         $this->download = $download;
     }
@@ -94,7 +93,7 @@ class DownloadTranslation
     /**
      * @param Locale $locale
      */
-    public function setLocale($locale)
+    public function setLocale(Locale $locale): void
     {
         $this->locale = $locale;
     }
@@ -102,7 +101,7 @@ class DownloadTranslation
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -110,7 +109,7 @@ class DownloadTranslation
     /**
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -118,7 +117,7 @@ class DownloadTranslation
     /**
      * @return Download
      */
-    public function getDownload()
+    public function getDownload(): Download
     {
         return $this->download;
     }
@@ -126,7 +125,7 @@ class DownloadTranslation
     /**
      * @return Locale
      */
-    public function getLocale()
+    public function getLocale(): Locale
     {
         return $this->locale;
     }

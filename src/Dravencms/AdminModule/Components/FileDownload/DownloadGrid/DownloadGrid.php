@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /*
  * Copyright (C) 2016 Adam Schubert <adam.schubert@sg1-game.net>.
@@ -23,11 +23,12 @@ namespace Dravencms\AdminModule\Components\FileDownload\DownloadGrid;
 
 use Dravencms\Components\BaseControl\BaseControl;
 use Dravencms\Components\BaseGrid\BaseGridFactory;
+use Dravencms\Components\BaseGrid\Grid;
 use Dravencms\Locale\CurrentLocaleResolver;
 use Dravencms\Model\FileDownload\Repository\DownloadRepository;
-use Kdyby\Doctrine\EntityManager;
-use Ublaboo\DataGrid\Column\ColumnText;
-use Ublaboo\DataGrid\DataGrid;
+use Dravencms\Database\EntityManager;
+use Nette\Security\User;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 
 /**
  * Description of DownloadGrid
@@ -45,6 +46,9 @@ class DownloadGrid extends BaseControl
 
     /** @var EntityManager */
     private $entityManager;
+    
+     /** @var User */
+    private $user;
 
     /** @var CurrentLocale */
     private $currentLocale;
@@ -55,33 +59,33 @@ class DownloadGrid extends BaseControl
     public $onDelete = [];
 
     /**
-     * DownloadGrid constructor.
      * @param DownloadRepository $downloadRepository
      * @param BaseGridFactory $baseGridFactory
      * @param EntityManager $entityManager
+     * @param User $user
      * @param CurrentLocaleResolver $currentLocaleResolver
      */
     public function __construct(
         DownloadRepository $downloadRepository,
         BaseGridFactory $baseGridFactory,
         EntityManager $entityManager,
+        User $user,
         CurrentLocaleResolver $currentLocaleResolver
     )
     {
-        parent::__construct();
-
         $this->baseGridFactory = $baseGridFactory;
         $this->downloadRepository = $downloadRepository;
         $this->entityManager = $entityManager;
+        $this->user = $user;
         $this->currentLocale = $currentLocaleResolver->getCurrentLocale();
     }
 
 
     /**
-     * @param $name
-     * @return \Dravencms\Components\BaseGrid\BaseGrid
+     * @param type $name
+     * @return Grid
      */
-    public function createComponentDataGrid($name)
+    public function createComponentDataGrid($name): Grid
     {
         /** @var DataGrid $grid */
         $grid = $this->baseGridFactory->create($this, $name);
@@ -108,7 +112,7 @@ class DownloadGrid extends BaseControl
             ->setFilterDate();
 
 
-        if ($this->presenter->isAllowed('fileDownload', 'edit')) {
+        if ($this->user->isAllowed('fileDownload', 'edit')) {
 
             $grid->addAction('files', 'Files', 'files')
                 ->setIcon('folder-open')
@@ -121,12 +125,12 @@ class DownloadGrid extends BaseControl
                 ->setClass('btn btn-xs btn-primary');
         }
 
-        if ($this->presenter->isAllowed('fileDownload', 'delete')) {
+        if ($this->user->isAllowed('fileDownload', 'delete')) {
             $grid->addAction('delete', '', 'delete!')
                 ->setIcon('trash')
                 ->setTitle('Smazat')
                 ->setClass('btn btn-xs btn-danger ajax')
-                ->setConfirm('Do you really want to delete row %s?', 'identifier');
+                ->setConfirmation(new StringConfirmation('Do you really want to delete row %s?', 'identifier'));
         }
 
         $grid->addGroupAction('Smazat')->onSelect[] = [$this, 'gridGroupActionDelete'];
@@ -138,7 +142,7 @@ class DownloadGrid extends BaseControl
     /**
      * @param array $ids
      */
-    public function gridGroupActionDelete(array $ids)
+    public function gridGroupActionDelete(array $ids): void
     {
         $this->handleDelete($ids);
     }
@@ -147,7 +151,7 @@ class DownloadGrid extends BaseControl
      * @param $id
      * @throws \Exception
      */
-    public function handleDelete($id)
+    public function handleDelete($id): void
     {
         $downloads = $this->downloadRepository->getById($id);
         foreach ($downloads AS $download)
@@ -164,7 +168,7 @@ class DownloadGrid extends BaseControl
         }
     }
 
-    public function render()
+    public function render(): void
     {
         $template = $this->template;
         $template->setFile(__DIR__ . '/DownloadGrid.latte');

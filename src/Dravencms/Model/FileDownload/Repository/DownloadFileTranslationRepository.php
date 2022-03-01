@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Copyright (C) 2016 Adam Schubert <adam.schubert@sg1-game.net>.
  */
@@ -8,12 +8,11 @@ namespace Dravencms\Model\FileDownload\Repository;
 use Dravencms\Model\FileDownload\Entities\DownloadFile;
 use Dravencms\Model\FileDownload\Entities\DownloadFileTranslation;
 use Dravencms\Model\Locale\Entities\ILocale;
-use Kdyby\Doctrine\EntityManager;
-use Nette;
+use Dravencms\Database\EntityManager;
 
 class DownloadFileTranslationRepository
 {
-    /** @var \Kdyby\Doctrine\EntityRepository */
+    /** @var \Doctrine\Persistence\ObjectRepository|DownloadFileTranslation */
     private $downloadFileTranslationRepository;
 
     /** @var EntityManager */
@@ -33,7 +32,7 @@ class DownloadFileTranslationRepository
      * @param $id
      * @return null|DownloadFileTranslation
      */
-    public function getOneById($id)
+    public function getOneById(int $id): ?DownloadFileTranslation
     {
         return $this->downloadFileTranslationRepository->find($id);
     }
@@ -43,7 +42,7 @@ class DownloadFileTranslationRepository
      * @param ILocale $locale
      * @return null|DownloadFileTranslation
      */
-    public function getTranslation(DownloadFile $downloadFile, ILocale $locale)
+    public function getTranslation(DownloadFile $downloadFile, ILocale $locale): ?DownloadFileTranslation
     {
         return $this->downloadFileTranslationRepository->findOneBy(['downloadFile' => $downloadFile, 'locale' => $locale]);
     }

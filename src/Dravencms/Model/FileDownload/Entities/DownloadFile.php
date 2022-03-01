@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Copyright (C) 2016 Adam Schubert <adam.schubert@sg1-game.net>.
  */
@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Dravencms\Model\Locale\Entities\ILocale;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Kdyby\Doctrine\Entities\Attributes\Identifier;
+use Dravencms\Database\Attributes\Identifier;
 use Nette;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sortable\Sortable;
@@ -70,7 +70,7 @@ class DownloadFile
      * @param Download $download
      * @param $identifier
      */
-    public function __construct(Download $download, $identifier)
+    public function __construct(Download $download, string $identifier)
     {
         $this->download = $download;
         $this->identifier = $identifier;
@@ -81,7 +81,7 @@ class DownloadFile
     /**
      * @param int $downloadCount
      */
-    public function setDownloadCount($downloadCount)
+    public function setDownloadCount(int $downloadCount): void
     {
         $this->downloadCount = $downloadCount;
     }
@@ -89,7 +89,7 @@ class DownloadFile
     /**
      * @param string $identifier
      */
-    public function setIdentifier($identifier)
+    public function setIdentifier(string $identifier): void
     {
         $this->identifier = $identifier;
     }
@@ -97,7 +97,7 @@ class DownloadFile
     /**
      * @param int $position
      */
-    public function setPosition($position)
+    public function setPosition(int $position): void
     {
         $this->position = $position;
     }
@@ -105,7 +105,7 @@ class DownloadFile
     /**
      * @return int
      */
-    public function getDownloadCount()
+    public function getDownloadCount(): int
     {
         return $this->downloadCount;
     }
@@ -113,7 +113,7 @@ class DownloadFile
     /**
      * @return int
      */
-    public function getPosition()
+    public function getPosition(): int
     {
         return $this->position;
     }
@@ -121,7 +121,7 @@ class DownloadFile
     /**
      * @return Download
      */
-    public function getDownload()
+    public function getDownload(): Download
     {
         return $this->download;
     }
@@ -147,7 +147,7 @@ class DownloadFile
     /**
      * @return string
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return $this->identifier;
     }

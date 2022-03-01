@@ -8,7 +8,7 @@ The best way to install dravencms/file-download is using  [Composer](http://getc
 
 
 ```sh
-$ composer require dravencms/file-download:@dev
+$ composer require dravencms/file-download
 ```
 
 Then you have to register extension in `config.neon`.

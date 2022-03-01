@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Copyright (C) 2016 Adam Schubert <adam.schubert@sg1-game.net>.
  */
@@ -7,9 +7,13 @@ namespace Dravencms\AdminModule\FileModule;
 
 
 use Dravencms\AdminModule\Components\FileDownload\DownloadFileForm\DownloadFileFormFactory;
+use Dravencms\AdminModule\Components\FileDownload\DownloadFileForm\DownloadFileForm;
 use Dravencms\AdminModule\Components\FileDownload\DownloadFileGrid\DownloadFileGridFactory;
+use Dravencms\AdminModule\Components\FileDownload\DownloadFileGrid\DownloadFileGrid;
 use Dravencms\AdminModule\Components\FileDownload\DownloadForm\DownloadFormFactory;
+use Dravencms\AdminModule\Components\FileDownload\DownloadForm\DownloadForm;
 use Dravencms\AdminModule\Components\FileDownload\DownloadGrid\DownloadGridFactory;
+use Dravencms\AdminModule\Components\FileDownload\DownloadGrid\DownloadGrid;
 use Dravencms\AdminModule\SecuredPresenter;
 use Dravencms\Model\FileDownload\Entities\Download;
 use Dravencms\Model\FileDownload\Entities\DownloadFile;
@@ -43,12 +47,12 @@ class DownloadPresenter extends SecuredPresenter
     /** @var null|DownloadFile */
     private $file = null;
 
-    public function renderDefault()
+    public function renderDefault(): void
     {
         $this->template->h1 = 'Downloads';
     }
 
-    public function actionEdit($id)
+    public function actionEdit(int $id = null): void
     {
         if ($id) {
             $this->template->h1 = 'Edit download';
@@ -66,7 +70,7 @@ class DownloadPresenter extends SecuredPresenter
     /**
      * @param $id
      */
-    public function actionFiles($id)
+    public function actionFiles(int $id): void
     {
         $this->download = $this->downloadRepository->getOneById($id);
         $this->template->download = $this->download;
@@ -78,7 +82,7 @@ class DownloadPresenter extends SecuredPresenter
      * @param null $fileId
      * @throws \Nette\Application\BadRequestException
      */
-    public function actionEditFile($downloadId, $fileId = null)
+    public function actionEditFile(int $downloadId, int $fileId = null): void
     {
         $this->download = $this->downloadRepository->getOneById($downloadId);
         if ($fileId)
@@ -97,8 +101,10 @@ class DownloadPresenter extends SecuredPresenter
         }
     }
 
-
-    public function createComponentFormDownload()
+    /**
+     * @return DownloadForm
+     */
+    public function createComponentFormDownload(): DownloadForm
     {
         $control = $this->downloadFormFactory->create($this->download);
         $control->onSuccess[] = function()
@@ -109,7 +115,10 @@ class DownloadPresenter extends SecuredPresenter
         return $control;
     }
 
-    public function createComponentGridDownload()
+    /**
+     * @return DownloadGrid
+     */
+    public function createComponentGridDownload(): DownloadGrid
     {
         $control = $this->downloadGridFactory->create();
         $control->onDelete[] = function()
@@ -120,7 +129,10 @@ class DownloadPresenter extends SecuredPresenter
         return $control;
     }
 
-    public function createComponentFormFile()
+    /**
+     * @return DownloadFileForm
+     */
+    public function createComponentFormFile(): DownloadFileForm
     {
         $control = $this->fileFormFactory->create($this->download, $this->file);
         $control->onSuccess[] = function()
@@ -131,7 +143,10 @@ class DownloadPresenter extends SecuredPresenter
         return $control;
     }
 
-    public function createComponentGridFile()
+    /**
+     * @return DownloadFileGrid
+     */
+    public function createComponentGridFile(): DownloadFileGrid
     {
         $control = $this->fileGridFactory->create($this->download);
         $control->onDelete[] = function()

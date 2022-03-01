@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * Copyright (C) 2016 Adam Schubert <adam.schubert@sg1-game.net>.
  *
@@ -28,5 +28,5 @@ interface DownloadFormFactory
      * @param Download|null $download
      * @return DownloadForm
      */
-    public function create(Download $download = null);
+    public function create(Download $download = null): DownloadForm;
 }

@@ -1,22 +1,20 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Copyright (C) 2016 Adam Schubert <adam.schubert@sg1-game.net>.
  */
 
 namespace Dravencms\Model\FileDownload\Repository;
 
-use Dravencms\Locale\TLocalizedRepository;
 use Dravencms\Model\FileDownload\Entities\Download;
-use Gedmo\Translatable\TranslatableListener;
-use Kdyby\Doctrine\EntityManager;
-use Nette;
 use Salamek\Cms\CmsActionOption;
 use Salamek\Cms\ICmsActionOption;
 use Salamek\Cms\ICmsComponentRepository;
-use Salamek\Cms\Models\ILocale;
 
 class DownloadCmsRepository implements ICmsComponentRepository
 {
+    /**
+     * @var DownloadRepository
+     */
     private $downloadRepository;
 
     /**
@@ -32,7 +30,7 @@ class DownloadCmsRepository implements ICmsComponentRepository
      * @param string $componentAction
      * @return ICmsActionOption[]
      */
-    public function getActionOptions($componentAction)
+    public function getActionOptions(string $componentAction)
     {
         switch ($componentAction)
         {
@@ -57,7 +55,7 @@ class DownloadCmsRepository implements ICmsComponentRepository
      * @param array $parameters
      * @return null|CmsActionOption
      */
-    public function getActionOption($componentAction, array $parameters)
+    public function getActionOption(string $componentAction, array $parameters)
     {
         $found = $this->downloadRepository->getOneByParameters($parameters);
 

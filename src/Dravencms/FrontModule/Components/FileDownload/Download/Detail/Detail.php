@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Dravencms\FrontModule\Components\FileDownload\Download\Detail;
 
@@ -55,7 +55,6 @@ class Detail extends BaseControl
         FileStorage $fileStorage
     )
     {
-        parent::__construct();
         $this->cmsActionOption = $cmsActionOption;
         $this->downloadRepository = $downloadRepository;
         $this->downloadFileRepository = $downloadFileRepository;
@@ -66,7 +65,7 @@ class Detail extends BaseControl
     }
 
 
-    public function render()
+    public function render(): void
     {
         $template = $this->template;
         $download = $this->downloadRepository->getOneById($this->cmsActionOption->getParameter('id'));
@@ -99,7 +98,7 @@ class Detail extends BaseControl
     /**
      * @param $downloadFileTranslationId
      */
-    public function handleDownload($downloadFileTranslationId)
+    public function handleDownload(int $downloadFileTranslationId): void
     {
         $downloadFileTranslation = $this->downloadFileTranslationRepository->getOneById($downloadFileTranslationId);
         if (!$downloadFileTranslation)
@@ -117,7 +116,7 @@ class Detail extends BaseControl
     /**
      * @return Control
      */
-    protected function createComponentVisualPaginator()
+    protected function createComponentVisualPaginator(): Control
     {
         // Init visual paginator
         $control = new Control();

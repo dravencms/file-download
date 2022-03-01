@@ -51,6 +51,9 @@ class DownloadFileForm extends BaseControl
 
     /** @var EntityManager */
     private $entityManager;
+    
+    /** @var User */
+    private $user;
 
     /** @var DownloadFileRepository */
     private $fileRepository;

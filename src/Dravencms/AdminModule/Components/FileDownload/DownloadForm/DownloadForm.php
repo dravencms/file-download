@@ -29,6 +29,7 @@ use Dravencms\Model\FileDownload\Repository\DownloadTranslationRepository;
 use Dravencms\Model\Locale\Repository\LocaleRepository;
 use Dravencms\Database\EntityManager;
 use Dravencms\Components\BaseForm\Form;
+use Nette\Security\User;
 
 /**
  * Description of DownloadForm
@@ -51,6 +52,9 @@ class DownloadForm extends BaseControl
 
     /** @var LocaleRepository */
     private $localeRepository;
+    
+    /** @var User */
+    private $user;
 
     /** @var Download|null */
     private $download = null;
@@ -70,6 +74,7 @@ class DownloadForm extends BaseControl
     public function __construct(
         BaseFormFactory $baseFormFactory,
         EntityManager $entityManager,
+        User $user,
         DownloadRepository $downloadRepository,
         DownloadTranslationRepository $downloadTranslationRepository,
         LocaleRepository $localeRepository,
@@ -79,6 +84,7 @@ class DownloadForm extends BaseControl
 
         $this->baseFormFactory = $baseFormFactory;
         $this->entityManager = $entityManager;
+        $this->user = $user;
         $this->downloadRepository = $downloadRepository;
         $this->downloadTranslationRepository = $downloadTranslationRepository;
         $this->localeRepository = $localeRepository;
@@ -147,7 +153,7 @@ class DownloadForm extends BaseControl
             $form->addError('Tento identifier je již zabrán.');
         }
 
-        if (!$this->presenter->isAllowed('fileDownload', 'edit')) {
+        if (!$this->user->isAllowed('fileDownload', 'edit')) {
             $form->addError('Nemáte oprávění editovat download.');
         }
     }

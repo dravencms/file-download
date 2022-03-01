@@ -35,6 +35,8 @@ use Dravencms\Database\EntityManager;
 use Dravencms\Components\BaseForm\Form;
 use Nette\Http\FileUpload;
 use Dravencms\File\File;
+use Nette\Security\User;
+
 use Salamek\Files\FileStorage;
 
 /**
@@ -97,6 +99,7 @@ class DownloadFileForm extends BaseControl
     public function __construct(
         BaseFormFactory $baseFormFactory,
         EntityManager $entityManager,
+        User $user,
         DownloadFileRepository $fileRepository,
         DownloadFileTranslationRepository $downloadFileTranslationRepository,
         StructureFileRepository $structureFileRepository,
@@ -112,6 +115,7 @@ class DownloadFileForm extends BaseControl
 
         $this->baseFormFactory = $baseFormFactory;
         $this->entityManager = $entityManager;
+        $this->user = $user;
         $this->fileRepository = $fileRepository;
         $this->localeRepository = $localeRepository;
         $this->structureFileRepository = $structureFileRepository;
@@ -189,7 +193,7 @@ class DownloadFileForm extends BaseControl
             $form->addError('Tento identifier je již zabrán.');
         }
 
-        if (!$this->presenter->isAllowed('fileDownload', 'edit')) {
+        if (!$this->user->isAllowed('fileDownload', 'edit')) {
             $form->addError('Nemáte oprávění editovat download file.');
         }
     }

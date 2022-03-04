@@ -165,7 +165,7 @@ class DownloadFileForm extends BaseControl
 
             $container->addTextArea('description');
 
-            $container->addText('structureFile')
+            $container->addInteger('structureFile')
                 ->setType('number');
 
             $container->addUpload('file');
@@ -174,7 +174,7 @@ class DownloadFileForm extends BaseControl
         $form->addText('identifier')
             ->setRequired('Please fill in unique identifier');
 
-        $form->addNumber('position')
+        $form->addInteger('position')
             ->setDisabled(is_null($this->file));
 
         $form->addSubmit('send');
@@ -223,7 +223,8 @@ class DownloadFileForm extends BaseControl
 
         foreach ($this->localeRepository->getActive() AS $activeLocale) {
 
-            $structureFile = $this->structureFileRepository->getOneById($values->{$activeLocale->getLanguageCode()}->structureFile);
+            $structureFileLocale = $values->{$activeLocale->getLanguageCode()}->structureFile;
+            $structureFile = ($structureFileLocale ? $this->structureFileRepository->getOneById($structureFileLocale) : null);
 
             /** @var FileUpload $fileUpload */
             $fileUpload = $values->{$activeLocale->getLanguageCode()}->file;

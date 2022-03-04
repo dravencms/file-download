@@ -106,7 +106,7 @@ class DownloadGrid extends BaseControl
             ->setFilterRange();
 
         $grid->addColumnDateTime('updatedAt', 'Last edit')
-            ->addAttributes(['class' => 'text-center'])
+            ->setAlign('center')
             ->setFormat($this->currentLocale->getDateTimeFormat())
             ->setSortable()
             ->setFilterDate();

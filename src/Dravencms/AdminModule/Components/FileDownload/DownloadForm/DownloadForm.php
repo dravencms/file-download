@@ -131,7 +131,7 @@ class DownloadForm extends BaseControl
         $form->addText('identifier')
             ->setRequired('Please fill in unique identifier');
 
-        $form->addNumber('pagination');
+        $form->addInteger('pagination');
 
         $form->addCheckbox('isShowName');
 

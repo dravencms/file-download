@@ -9,7 +9,7 @@ use Dravencms\Model\FileDownload\Repository\DownloadFileTranslationRepository;
 use Dravencms\Model\FileDownload\Repository\DownloadRepository;
 use Dravencms\Model\FileDownload\Repository\DownloadTranslationRepository;
 use IPub\VisualPaginator\Components\Control;
-use Salamek\Cms\ICmsActionOption;
+use Dravencms\Structure\ICmsActionOption;
 use Salamek\Files\FileStorage;
 
 class Detail extends BaseControl

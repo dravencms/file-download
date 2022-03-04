@@ -5,7 +5,7 @@ namespace Dravencms\FileDownload\DI;
 use Dravencms\FileDownload\FileDownload;
 
 use Nette\DI\CompilerExtension;
-use Salamek\Cms\DI\CmsExtension;
+use Dravencms\Structure\DI\StructureExtension;
 
 /**
  * Class FileDownloadExtension
@@ -20,7 +20,7 @@ class FileDownloadExtension extends CompilerExtension
         $builder->addDefinition($this->prefix('fileDownload'))
             ->setFactory(FileDownload::class);
 
-        if (class_exists(CmsExtension::class)) {
+        if (class_exists(StructureExtension::class)) {
             $this->loadCmsComponents();
             $this->loadCmsModels();
         }
@@ -49,7 +49,7 @@ class FileDownloadExtension extends CompilerExtension
         $builder = $this->getContainerBuilder();
         foreach ($this->loadFromFile(__DIR__ . '/cmsComponents.neon') as $i => $command) {
             $cli = $builder->addFactoryDefinition($this->prefix('cmsComponent.' . $i))
-                ->addTag(CmsExtension::TAG_COMPONENT);
+                ->addTag(StructureExtension::TAG_COMPONENT);
             if (is_string($command)) {
                 $cli->setImplement($command);
             } else {

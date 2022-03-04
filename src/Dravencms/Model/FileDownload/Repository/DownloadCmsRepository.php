@@ -6,9 +6,9 @@
 namespace Dravencms\Model\FileDownload\Repository;
 
 use Dravencms\Model\FileDownload\Entities\Download;
-use Salamek\Cms\CmsActionOption;
-use Salamek\Cms\ICmsActionOption;
-use Salamek\Cms\ICmsComponentRepository;
+use Dravencms\Structure\CmsActionOption;
+use Dravencms\Structure\ICmsActionOption;
+use Dravencms\Structure\ICmsComponentRepository;
 
 class DownloadCmsRepository implements ICmsComponentRepository
 {

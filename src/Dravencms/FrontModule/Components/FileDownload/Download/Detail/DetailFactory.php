@@ -19,7 +19,7 @@
  */
 namespace Dravencms\FrontModule\Components\FileDownload\Download\Detail;
 
-use Salamek\Cms\ICmsActionOption;
+use Dravencms\Structure\ICmsActionOption;
 
 interface DetailFactory
 {

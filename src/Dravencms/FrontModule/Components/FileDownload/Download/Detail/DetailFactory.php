@@ -27,5 +27,5 @@ interface DetailFactory
      * @param ICmsActionOption $cmsActionOption
      * @return Detail
      */
-    public function create(ICmsActionOption $cmsActionOption);
+    public function create(ICmsActionOption $cmsActionOption): Detail;
 }

@@ -161,11 +161,7 @@ class DownloadGrid extends BaseControl
 
         $this->entityManager->flush();
 
-        if ($this->presenter->isAjax()) {
-            $this['grid']->reload();
-        } else {
-            $this->onDelete();
-        }
+        $this->onDelete();
     }
 
     public function render(): void

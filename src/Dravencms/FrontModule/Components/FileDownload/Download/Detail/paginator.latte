@@ -1,0 +1,24 @@
+{if $paginator->pageCount > 1}
+    <div class="pagination">
+        {if $paginator->isFirst()}
+            <a class="disabled">« {_"nemec.paginator.previous"}</a>
+        {else}
+            <a href="{link $handle, 'page' => $paginator->page - 1}" rel="prev" n:class="$useAjax ? ajax">« {_"nemec.paginator.previous"}</a>
+        {/if}
+
+        {foreach $steps as $step}
+            {if $step == $paginator->page}
+                <a href="#" class="active">{$step}</a>
+            {else}
+                <a href="{link $handle, 'page' => $step}" n:class="$useAjax ? ajax">{$step}</a>
+            {/if}
+            {if $iterator->nextValue > $step + 1}<a class="disabled">…</a>{/if}
+        {/foreach}
+
+        {if $paginator->isLast()}
+            <a class="disabled">{_"nemec.paginator.next"} »</a>
+        {else}
+            <a href="{link $handle, 'page' => $paginator->page + 1}" rel="next" n:class="$useAjax ? ajax">{_"nemec.paginator.next"} »</a>
+        {/if}
+    </div>
+{/if}

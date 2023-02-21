@@ -8,7 +8,8 @@ use Dravencms\Model\FileDownload\Repository\DownloadFileRepository;
 use Dravencms\Model\FileDownload\Repository\DownloadFileTranslationRepository;
 use Dravencms\Model\FileDownload\Repository\DownloadRepository;
 use Dravencms\Model\FileDownload\Repository\DownloadTranslationRepository;
-use IPub\VisualPaginator\Components\Control;
+use Dravencms\Components\BasePaginator\BasePaginatorFactory;
+use Dravencms\Components\BasePaginator\BasePaginator;
 use Dravencms\Structure\ICmsActionOption;
 use Salamek\Files\FileStorage;
 
@@ -32,6 +33,9 @@ class Detail extends BaseControl
     /** @var CurrentLocale */
     private $currentLocale;
 
+    /** @var BasePaginatorFactory */
+    private $basePaginatorFactory;
+
     /** @var FileStorage */
     private $fileStorage;
 
@@ -52,6 +56,7 @@ class Detail extends BaseControl
         DownloadFileRepository $downloadFileRepository,
         DownloadFileTranslationRepository $downloadFileTranslationRepository,
         CurrentLocaleResolver $currentLocaleResolver,
+        BasePaginatorFactory $basePaginatorFactory,
         FileStorage $fileStorage
     )
     {
@@ -61,6 +66,7 @@ class Detail extends BaseControl
         $this->downloadTranslationRepository = $downloadTranslationRepository;
         $this->downloadFileTranslationRepository = $downloadFileTranslationRepository;
         $this->fileStorage = $fileStorage;
+        $this->basePaginatorFactory = $basePaginatorFactory;
         $this->currentLocale = $currentLocaleResolver->getCurrentLocale();
     }
 
@@ -114,13 +120,13 @@ class Detail extends BaseControl
     }
 
     /**
-     * @return Control
+     * @return BasePaginator
      */
-    protected function createComponentVisualPaginator(): Control
+    protected function createComponentVisualPaginator(): BasePaginator
     {
-        // Init visual paginator
-        $control = new Control();
-        $control->setTemplateFile('bootstrap.latte');
+        $control = $this->basePaginatorFactory->create();
+        $control->setTemplateFile(__DIR__.'/paginator.latte');
+        //$control->setTemplateFile('bootstrap.latte');
 
         $control->onShowPage[] = (function ($component, $page) {
             if ($this->presenter->isAjax()){

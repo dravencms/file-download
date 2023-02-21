@@ -15,7 +15,8 @@
     }
   ],
   "require": {
-    "dravencms/file": "^v2.0"
+    "dravencms/file": "^v2.0",
+    "dravencms/paginator": ">=1.0"
   },
   "suggest": {
     "dravencms/structure": "Allows file download components to be used in cms"

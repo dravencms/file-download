@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Dravencms\Model\Locale\Entities\ILocale;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Dravencms\Database\Attributes\TimestampableEntity;
 use Dravencms\Database\Attributes\Identifier;
 use Nette;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -17,9 +17,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * Class Download
  * @package Dravencms\Model\File\Entities
- * @ORM\Entity
- * @ORM\Table(name="fileDownload")
  */
+#[ORM\Entity]
+#[ORM\Table(name: "fileDownload")]
 class Download
 {
     use Nette\SmartObject;
@@ -28,32 +28,32 @@ class Download
 
     /**
      * @var string
-     * @ORM\Column(type="string",length=255,nullable=false, unique=true)
      */
+    #[ORM\Column(type: "string",length: 255,nullable: false, unique: true)]
     private $identifier;
 
     /**
      * @var ArrayCollection|DownloadFile[]
-     * @ORM\OneToMany(targetEntity="DownloadFile", mappedBy="download",cascade={"persist"})
      */
+    #[ORM\OneToMany(targetEntity: "DownloadFile", mappedBy: "download",cascade: ["persist"])]
     private $downloadFiles;
 
     /**
      * @var integer
-     * @ORM\Column(type="integer", nullable=true)
      */
+    #[ORM\Column(type: "integer", nullable: true)]
     private $pagination;
 
     /**
      * @var boolean
-     * @ORM\Column(type="boolean", nullable=false)
      */
+    #[ORM\Column(type: "boolean", nullable: false)]
     private $isShowName;
 
     /**
      * @var ArrayCollection|DownloadTranslation[]
-     * @ORM\OneToMany(targetEntity="DownloadTranslation", mappedBy="download",cascade={"persist", "remove"})
      */
+    #[ORM\OneToMany(targetEntity: "DownloadTranslation", mappedBy: "download",cascade: ["persist", "remove"])]
     private $translations;
 
     /**
@@ -62,7 +62,7 @@ class Download
      * @param null|integer $pagination
      * @param bool $isShowName
      */
-    public function __construct(string $identifier, int $pagination = null, bool $isShowName = false)
+    public function __construct(string $identifier, ?int $pagination = null, bool $isShowName = false)
     {
         $this->identifier = $identifier;
         $this->pagination = $pagination;
@@ -82,7 +82,7 @@ class Download
     /**
      * @param integer $pagination
      */
-    public function setPagination(int $pagination = null): void
+    public function setPagination(?int $pagination = null): void
     {
         $this->pagination = $pagination;
     }

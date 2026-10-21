@@ -111,7 +111,7 @@ class DownloadFileForm extends BaseControl
         FileStorage $fileStorage,
         File $fileFile,
         Download $download,
-        DownloadFile $file = null
+        ?DownloadFile $file = null
     ) {
         $this->download = $download;
         $this->fileFile = $fileFile;

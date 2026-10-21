@@ -30,5 +30,5 @@ interface DownloadFileFormFactory
      * @param DownloadFile|null $file
      * @return DownloadFileForm
      */
-    public function create(Download $download, DownloadFile $file = null): DownloadFileForm;
+    public function create(Download $download, ?DownloadFile $file = null): DownloadFileForm;
 }

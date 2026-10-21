@@ -77,7 +77,7 @@ class DownloadRepository
      * @return boolean
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function isIdentifierFree(string $identifier, Download $downloadIgnore = null): bool
+    public function isIdentifierFree(string $identifier, ?Download $downloadIgnore = null): bool
     {
         $qb = $this->downloadRepository->createQueryBuilder('d')
             ->select('d')

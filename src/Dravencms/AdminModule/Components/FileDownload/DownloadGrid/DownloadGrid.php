@@ -28,7 +28,7 @@ use Dravencms\Locale\CurrentLocaleResolver;
 use Dravencms\Model\FileDownload\Repository\DownloadRepository;
 use Dravencms\Database\EntityManager;
 use Nette\Security\User;
-use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
+use Contributte\Datagrid\Column\Action\Confirmation\StringConfirmation;
 
 /**
  * Description of DownloadGrid

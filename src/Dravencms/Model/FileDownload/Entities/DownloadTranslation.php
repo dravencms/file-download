@@ -8,7 +8,7 @@ namespace Dravencms\Model\FileDownload\Entities;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Dravencms\Model\Locale\Entities\Locale;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Dravencms\Database\Attributes\TimestampableEntity;
 use Dravencms\Database\Attributes\Identifier;
 use Nette;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -16,9 +16,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * Class DownloadTranslation
  * @package Dravencms\Model\File\Entities
- * @ORM\Entity
- * @ORM\Table(name="fileDownloadTranslation")
  */
+#[ORM\Entity]
+#[ORM\Table(name: "fileDownloadTranslation")]
 class DownloadTranslation
 {
     use Nette\SmartObject;
@@ -27,28 +27,28 @@ class DownloadTranslation
 
     /**
      * @var string
-     * @ORM\Column(type="string",length=255,nullable=false)
      */
+    #[ORM\Column(type: "string",length: 255,nullable: false)]
     private $name;
 
     /**
      * @var string
-     * @ORM\Column(type="string",length=255,nullable=false)
      */
+    #[ORM\Column(type: "string",length: 255,nullable: false)]
     private $description;
 
     /**
      * @var Download
-     * @ORM\ManyToOne(targetEntity="Download", inversedBy="translations")
-     * @ORM\JoinColumn(name="download_id", referencedColumnName="id")
      */
+    #[ORM\ManyToOne(targetEntity: "Download", inversedBy: "translations")]
+    #[ORM\JoinColumn(name: "download_id", referencedColumnName: "id")]
     private $download;
 
     /**
      * @var Locale
-     * @ORM\ManyToOne(targetEntity="Dravencms\Model\Locale\Entities\Locale")
-     * @ORM\JoinColumn(name="locale_id", referencedColumnName="id")
      */
+    #[ORM\ManyToOne(targetEntity: "Dravencms\Model\Locale\Entities\Locale")]
+    #[ORM\JoinColumn(name: "locale_id", referencedColumnName: "id")]
     private $locale;
 
     /**

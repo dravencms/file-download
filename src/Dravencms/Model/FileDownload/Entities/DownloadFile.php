@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Dravencms\Model\Locale\Entities\ILocale;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Dravencms\Database\Attributes\TimestampableEntity;
 use Dravencms\Database\Attributes\Identifier;
 use Nette;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -19,13 +19,11 @@ use Gedmo\Sortable\Sortable;
 /**
  * Class DownloadFile
  * @package Dravencms\Model\File\Entities
- * @ORM\Entity
- * @ORM\Table(name="fileDownloadFile",
- *      uniqueConstraints={
- *        @UniqueConstraint(name="identifier_unique",
- *            columns={"identifier", "download_id"})
- *    }))
+ * )
  */
+#[ORM\Entity]
+#[ORM\UniqueConstraint(name: "identifier_unique", columns: ["identifier", "download_id"])]
+#[ORM\Table(name: "fileDownloadFile")]
 class DownloadFile
 {
     use Nette\SmartObject;
@@ -34,35 +32,35 @@ class DownloadFile
 
     /**
      * @var string
-     * @ORM\Column(type="string",length=255,nullable=false)
      */
+    #[ORM\Column(type: "string",length: 255,nullable: false)]
     private $identifier;
     
     /**
      * @var Download
-     * @Gedmo\SortableGroup
-     * @ORM\ManyToOne(targetEntity="Download", inversedBy="downloadFiles")
-     * @ORM\JoinColumn(name="download_id", referencedColumnName="id")
      */
+    #[Gedmo\SortableGroup]
+    #[ORM\ManyToOne(targetEntity: "Download", inversedBy: "downloadFiles")]
+    #[ORM\JoinColumn(name: "download_id", referencedColumnName: "id")]
     private $download;
 
     /**
      * @var integer
-     * @ORM\Column(type="integer")
      */
+    #[ORM\Column(type: "integer")]
     private $downloadCount;
 
     /**
      * @var integer
-     * @Gedmo\SortablePosition
-     * @ORM\Column(type="integer")
      */
+    #[Gedmo\SortablePosition]
+    #[ORM\Column(type: "integer")]
     private $position;
 
     /**
      * @var ArrayCollection|DownloadFileTranslation[]
-     * @ORM\OneToMany(targetEntity="DownloadFileTranslation", mappedBy="downloadFile",cascade={"persist", "remove"})
      */
+    #[ORM\OneToMany(targetEntity: "DownloadFileTranslation", mappedBy: "downloadFile",cascade: ["persist", "remove"])]
     private $translations;
 
     /**

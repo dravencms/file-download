@@ -78,7 +78,7 @@ class DownloadForm extends BaseControl
         DownloadRepository $downloadRepository,
         DownloadTranslationRepository $downloadTranslationRepository,
         LocaleRepository $localeRepository,
-        Download $download = null
+        ?Download $download = null
     ) {
         $this->download = $download;
 

@@ -29,7 +29,7 @@ use Dravencms\Model\FileDownload\Entities\Download;
 use Dravencms\Model\FileDownload\Repository\DownloadFileRepository;
 use Dravencms\Database\EntityManager;
 use Nette\Security\User;
-use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
+use Contributte\Datagrid\Column\Action\Confirmation\StringConfirmation;
 
 /**
  * Description of DownloadFileGrid

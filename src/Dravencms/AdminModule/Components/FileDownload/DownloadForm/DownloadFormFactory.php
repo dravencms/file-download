@@ -28,5 +28,5 @@ interface DownloadFormFactory
      * @param Download|null $download
      * @return DownloadForm
      */
-    public function create(Download $download = null): DownloadForm;
+    public function create(?Download $download = null): DownloadForm;
 }

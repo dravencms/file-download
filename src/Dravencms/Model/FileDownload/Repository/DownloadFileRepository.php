@@ -52,7 +52,7 @@ class DownloadFileRepository
      * @param null $offset
      * @return DownloadFile[]
      */
-    public function getByDownload(Download $download, int $limit = null, int $offset = null)
+    public function getByDownload(Download $download, ?int $limit = null, ?int $offset = null)
     {
         return $this->downloadFileRepository->findBy(['download' => $download],[], $limit, $offset);
     }
@@ -77,7 +77,7 @@ class DownloadFileRepository
      * @return bool
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function isIdentifierFree(string $identifier, Download $download, DownloadFile $downloadFileIgnore = null): bool
+    public function isIdentifierFree(string $identifier, Download $download, ?DownloadFile $downloadFileIgnore = null): bool
     {
         $qb = $this->downloadFileRepository->createQueryBuilder('df')
             ->select('df')

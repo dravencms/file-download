@@ -2,11 +2,11 @@
 
 <h3 n:if="$download->isShowName()" class="heading-title">{$downloadTranslation->getName()}</h3>
 <div class="news-wrapper" n:snippet="detail">
-    <article n:foreach="$downloadFiles AS $downloadFile" class="news-item page-row has-divider clearfix row">
+    <article n:foreach="$downloadFiles as $downloadFile" class="news-item page-row has-divider clearfix row">
         {var $fileTranslation = $downloadFile->getTranslation($currentLocale)}
         <figure class="thumb file col-md-2 col-sm-3 col-xs-4">
             {if \Salamek\Files\Models\IFile::TYPE_IMAGE == $fileTranslation->getStructureFile()->getFile()->getType()}
-                <img class="img-responsive" n:img="$fileTranslation->getStructureFile()->getFile(), 122x91" alt="{$fileTranslation->getName()}">
+                <img class="img-responsive" n:img="$fileTranslation->getStructureFile()->getFile(), '122x91'" alt="{$fileTranslation->getName()}">
             {else}
                 <img class="img-responsive" src="{$fileTranslation->getStructureFile()->getFile()|fileIcon}" alt="{$fileTranslation->getName()}">
             {/if}

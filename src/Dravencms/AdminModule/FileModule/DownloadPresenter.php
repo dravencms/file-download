@@ -52,7 +52,7 @@ class DownloadPresenter extends SecuredPresenter
         $this->template->h1 = 'Downloads';
     }
 
-    public function actionEdit(int $id = null): void
+    public function actionEdit(?int $id = null): void
     {
         if ($id) {
             $this->template->h1 = 'Edit download';
@@ -82,7 +82,7 @@ class DownloadPresenter extends SecuredPresenter
      * @param null $fileId
      * @throws \Nette\Application\BadRequestException
      */
-    public function actionEditFile(int $downloadId, int $fileId = null): void
+    public function actionEditFile(int $downloadId, ?int $fileId = null): void
     {
         $this->download = $this->downloadRepository->getOneById($downloadId);
         if ($fileId)

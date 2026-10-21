@@ -83,10 +83,8 @@ class DownloadFileRepository
             ->select('df')
             ->where('df.identifier = :identifier')
             ->andWhere('df.download = :download')
-            ->setParameters([
-                'identifier' => $identifier,
-                'download' => $download
-            ]);
+            ->setParameter('identifier', $identifier)
+            ->setParameter('download', $download);
 
         if ($downloadFileIgnore)
         {

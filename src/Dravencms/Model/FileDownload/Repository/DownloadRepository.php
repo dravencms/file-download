@@ -82,9 +82,7 @@ class DownloadRepository
         $qb = $this->downloadRepository->createQueryBuilder('d')
             ->select('d')
             ->where('d.identifier = :identifier')
-            ->setParameters([
-                'identifier' => $identifier,
-            ]);
+            ->setParameter('identifier', $identifier);
 
         if ($downloadIgnore)
         {

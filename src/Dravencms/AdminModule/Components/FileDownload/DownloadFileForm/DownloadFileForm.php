@@ -126,28 +126,6 @@ class DownloadFileForm extends BaseControl
         $this->fileStorage = $fileStorage;
         $this->file = $file;
         $this->downloadFileTranslationRepository = $downloadFileTranslationRepository;
-
-
-        if ($this->file) {
-            
-            $defaults = [
-                'position' => $this->file->getPosition(),
-                'identifier' => $this->file->getIdentifier()
-            ];
-
-            foreach ($this->file->getTranslations() AS $translation)
-            {
-                $defaults[$translation->getLocale()->getLanguageCode()]['name'] = $translation->getName();
-                $defaults[$translation->getLocale()->getLanguageCode()]['description'] = $translation->getDescription();
-                $defaults[$translation->getLocale()->getLanguageCode()]['structureFile'] = ($translation->getStructureFile() ? $translation->getStructureFile()->getId() : null);
-            }
-
-        }
-        else{
-            $defaults = [];
-        }
-
-        $this['form']->setDefaults($defaults);
     }
 
     /**
@@ -181,6 +159,27 @@ class DownloadFileForm extends BaseControl
 
         $form->onValidate[] = [$this, 'editFormValidate'];
         $form->onSuccess[] = [$this, 'editFormSucceeded'];
+
+        if ($this->file) {
+
+            $defaults = [
+                'position' => $this->file->getPosition(),
+                'identifier' => $this->file->getIdentifier()
+            ];
+
+            foreach ($this->file->getTranslations() AS $translation)
+            {
+                $defaults[$translation->getLocale()->getLanguageCode()]['name'] = $translation->getName();
+                $defaults[$translation->getLocale()->getLanguageCode()]['description'] = $translation->getDescription();
+                $defaults[$translation->getLocale()->getLanguageCode()]['structureFile'] = ($translation->getStructureFile() ? $translation->getStructureFile()->getId() : null);
+            }
+
+        }
+        else{
+            $defaults = [];
+        }
+
+        $form->setDefaults($defaults);
 
         return $form;
     }

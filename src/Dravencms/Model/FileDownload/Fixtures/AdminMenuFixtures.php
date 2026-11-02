@@ -7,6 +7,7 @@ namespace Dravencms\Model\FileDownload\Fixtures;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Dravencms\Model\Admin\Entities\Menu;
+use Dravencms\Model\User\Entities\AclOperation;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -21,7 +22,7 @@ class AdminMenuFixtures extends AbstractFixture implements DependentFixtureInter
     {
         $menu = $manager->getRepository(Menu::class);
 
-        $adminMenu = new Menu('Download', ':Admin:File:Download', 'fa-download', $this->getReference('user-acl-operation-fileDownload-edit'));
+        $adminMenu = new Menu('Download', ':Admin:File:Download', 'fa-download', $this->getReference('user-acl-operation-fileDownload-edit', AclOperation::class));
 
         if ($parent = $menu->findOneBy(['name' => 'Site items']))
         {

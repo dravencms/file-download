@@ -88,28 +88,6 @@ class DownloadForm extends BaseControl
         $this->downloadRepository = $downloadRepository;
         $this->downloadTranslationRepository = $downloadTranslationRepository;
         $this->localeRepository = $localeRepository;
-
-
-        if ($this->download) {
-            $defaults = [
-                'isShowName' => $this->download->isShowName(),
-                'identifier' => $this->download->getIdentifier(),
-                'pagination' => $this->download->getPagination() 
-            ];
-
-            foreach ($this->download->getTranslations() AS $translation)
-            {
-                $defaults[$translation->getLocale()->getLanguageCode()]['name'] = $translation->getName();
-                $defaults[$translation->getLocale()->getLanguageCode()]['description'] = $translation->getDescription();
-            }
-        }
-        else{
-            $defaults = [
-                'isShowName' => false
-            ];
-        }
-
-        $this['form']->setDefaults($defaults);
     }
 
     /**
@@ -139,6 +117,27 @@ class DownloadForm extends BaseControl
 
         $form->onValidate[] = [$this, 'editFormValidate'];
         $form->onSuccess[] = [$this, 'editFormSucceeded'];
+
+        if ($this->download) {
+            $defaults = [
+                'isShowName' => $this->download->isShowName(),
+                'identifier' => $this->download->getIdentifier(),
+                'pagination' => $this->download->getPagination()
+            ];
+
+            foreach ($this->download->getTranslations() AS $translation)
+            {
+                $defaults[$translation->getLocale()->getLanguageCode()]['name'] = $translation->getName();
+                $defaults[$translation->getLocale()->getLanguageCode()]['description'] = $translation->getDescription();
+            }
+        }
+        else{
+            $defaults = [
+                'isShowName' => false
+            ];
+        }
+
+        $form->setDefaults($defaults);
 
         return $form;
     }

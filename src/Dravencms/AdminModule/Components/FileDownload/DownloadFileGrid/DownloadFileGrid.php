@@ -125,14 +125,14 @@ class DownloadFileGrid extends BaseControl
             $grid->addAction('editFile', '', 'editFile', ['fileId' => 'id', 'downloadId' => 'download.id'])
                 ->setIcon('pencil')
                 ->setTitle('Upravit')
-                ->setClass('btn btn-xs btn-primary');
+                ->setClass('btn btn-sm btn-primary');
         }
 
         if ($this->user->isAllowed('fileDownload', 'delete')) {
             $grid->addAction('delete', '', 'delete!')
                 ->setIcon('trash')
                 ->setTitle('Smazat')
-                ->setClass('btn btn-xs btn-danger ajax')
+                ->setClass('btn btn-sm btn-danger ajax')
                 ->setConfirmation(new StringConfirmation('Do you really want to delete row %s?', 'identifier'));
             
             $grid->addGroupAction('Smazat')->onSelect[] = [$this, 'gridGroupActionDelete'];

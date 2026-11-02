@@ -101,21 +101,21 @@ class DownloadFileGrid extends BaseControl
         $grid->setDataSource($this->downloadFileRepository->getDownloadFileQueryBuilder($this->download));
 
 
-        $grid->addColumnText('identifier', 'Identifier', 'identifier')
+        $grid->addColumnText('identifier', 'fileDownload.admin.field.identifier', 'identifier')
             ->setSortable()
             ->setFilterText();
 
-        $grid->addColumnNumber('downloadCount', 'Download count')
+        $grid->addColumnNumber('downloadCount', 'fileDownload.admin.field.downloadCount')
             ->setAlign('center')
             ->setFilterRange();
 
-        $grid->addColumnDateTime('updatedAt', 'Last edit')
+        $grid->addColumnDateTime('updatedAt', 'fileDownload.admin.field.updated')
             ->setAlign('center')
             ->setFormat($this->currentLocale->getDateTimeFormat())
             ->setSortable()
             ->setFilterDate();
 
-        $grid->addColumnNumber('position', 'Position')
+        $grid->addColumnNumber('position', 'fileDownload.admin.field.position')
             ->setAlign('center')
             ->setFilterRange();
 
@@ -124,18 +124,18 @@ class DownloadFileGrid extends BaseControl
             
             $grid->addAction('editFile', '', 'editFile', ['fileId' => 'id', 'downloadId' => 'download.id'])
                 ->setIcon('pencil')
-                ->setTitle('Upravit')
+                ->setTitle('fileDownload.admin.action.edit')
                 ->setClass('btn btn-sm btn-primary');
         }
 
         if ($this->user->isAllowed('fileDownload', 'delete')) {
             $grid->addAction('delete', '', 'delete!')
                 ->setIcon('trash')
-                ->setTitle('Smazat')
+                ->setTitle('fileDownload.admin.action.delete')
                 ->setClass('btn btn-sm btn-danger ajax')
-                ->setConfirmation(new StringConfirmation('Do you really want to delete row %s?', 'identifier'));
+                ->setConfirmation(new StringConfirmation('fileDownload.admin.confirm.delete', 'identifier'));
             
-            $grid->addGroupAction('Smazat')->onSelect[] = [$this, 'gridGroupActionDelete'];
+            $grid->addGroupAction('fileDownload.admin.action.delete')->onSelect[] = [$this, 'gridGroupActionDelete'];
         }
 
         return $grid;
@@ -164,7 +164,7 @@ class DownloadFileGrid extends BaseControl
         $this->entityManager->flush();
         
         
-        if ($this->presenter->isAjax()) {
+        if ($this->getPresenter()->isAjax()) {
             $this['grid']->reload();
         } else {
             $this->onDelete();

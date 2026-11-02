@@ -100,20 +100,20 @@ class DownloadForm extends BaseControl
         foreach ($this->localeRepository->getActive() as $activeLocale) {
             $container = $form->addContainer($activeLocale->getLanguageCode());
             $container->addText('name')
-                ->setRequired('Please enter download name.')
-                ->addRule(Form::MAX_LENGTH, 'Download name is too long.', 255);
+                ->setRequired('fileDownload.admin.validation.downloadNameRequired')
+                ->addRule(Form::MAX_LENGTH, 'fileDownload.admin.validation.downloadNameTooLong', 255);
 
             $container->addTextArea('description');
         }
 
         $form->addText('identifier')
-            ->setRequired('Please fill in unique identifier');
+            ->setRequired('fileDownload.admin.validation.identifierRequired');
 
-        $form->addInteger('pagination');
+        $form->addText('pagination')->setNullable()->addRule(Form::INTEGER, 'fileDownload.admin.validation.paginationInteger');
 
         $form->addCheckbox('isShowName');
 
-        $form->addSubmit('send');
+        $form->addSubmit('send', 'fileDownload.admin.action.save');
 
         $form->onValidate[] = [$this, 'editFormValidate'];
         $form->onSuccess[] = [$this, 'editFormSucceeded'];
@@ -149,11 +149,11 @@ class DownloadForm extends BaseControl
     {
         $values = $form->getValues();
         if (!$this->downloadRepository->isIdentifierFree($values->identifier, $this->download)) {
-            $form->addError('Tento identifier je již zabrán.');
+            $form->addError('fileDownload.admin.validation.identifierTaken');
         }
 
         if (!$this->user->isAllowed('fileDownload', 'edit')) {
-            $form->addError('Nemáte oprávění editovat download.');
+            $form->addError('fileDownload.admin.validation.downloadForbidden');
         }
     }
 

@@ -49,13 +49,13 @@ class DownloadPresenter extends SecuredPresenter
 
     public function renderDefault(): void
     {
-        $this->template->h1 = 'Downloads';
+        $this->template->h1 = $this->translator->translate('fileDownload.admin.title.downloads');
     }
 
     public function actionEdit(?int $id = null): void
     {
         if ($id) {
-            $this->template->h1 = 'Edit download';
+            $this->template->h1 = $this->translator->translate('fileDownload.admin.title.editDownload');
             $download = $this->downloadRepository->getOneById($id);
             if (!$download) {
                 $this->error();
@@ -63,7 +63,7 @@ class DownloadPresenter extends SecuredPresenter
 
             $this->download = $download;
         } else {
-            $this->template->h1 = 'New download';
+            $this->template->h1 = $this->translator->translate('fileDownload.admin.title.newDownload');
         }
     }
 
@@ -74,7 +74,7 @@ class DownloadPresenter extends SecuredPresenter
     {
         $this->download = $this->downloadRepository->getOneById($id);
         $this->template->download = $this->download;
-        $this->template->h1 = 'Download files';
+        $this->template->h1 = $this->translator->translate('fileDownload.admin.title.files');
     }
 
     /**
@@ -93,11 +93,11 @@ class DownloadPresenter extends SecuredPresenter
             }
 
             $this->file = $file;
-            $this->template->h1 = 'Edit download file';
+            $this->template->h1 = $this->translator->translate('fileDownload.admin.title.editFile');
         }
         else
         {
-            $this->template->h1 = 'New download file';
+            $this->template->h1 = $this->translator->translate('fileDownload.admin.title.newFile');
         }
     }
 
@@ -109,7 +109,7 @@ class DownloadPresenter extends SecuredPresenter
         $control = $this->downloadFormFactory->create($this->download);
         $control->onSuccess[] = function()
         {
-            $this->flashMessage('Download has been successfully saved', 'alert-success');
+            $this->flashMessage($this->translator->translate('fileDownload.admin.flash.downloadSaved'), 'alert-success');
             $this->redirect('Download:');
         };
         return $control;
@@ -123,7 +123,7 @@ class DownloadPresenter extends SecuredPresenter
         $control = $this->downloadGridFactory->create();
         $control->onDelete[] = function()
         {
-            $this->flashMessage('Download has been successfully deleted', 'alert-success');
+            $this->flashMessage($this->translator->translate('fileDownload.admin.flash.downloadDeleted'), 'alert-success');
             $this->redirect('Download:');
         };
         return $control;
@@ -137,7 +137,7 @@ class DownloadPresenter extends SecuredPresenter
         $control = $this->fileFormFactory->create($this->download, $this->file);
         $control->onSuccess[] = function()
         {
-            $this->flashMessage('Download item has been successfully saved', 'alert-success');
+            $this->flashMessage($this->translator->translate('fileDownload.admin.flash.fileSaved'), 'alert-success');
             $this->redirect('Download:files', $this->download->getId());
         };
         return $control;
@@ -151,7 +151,7 @@ class DownloadPresenter extends SecuredPresenter
         $control = $this->fileGridFactory->create($this->download);
         $control->onDelete[] = function()
         {
-            $this->flashMessage('Download item has been successfully deleted', 'alert-success');
+            $this->flashMessage($this->translator->translate('fileDownload.admin.flash.fileDeleted'), 'alert-success');
             $this->redirect('Download:files', $this->download->getId());
         };
         return $control;

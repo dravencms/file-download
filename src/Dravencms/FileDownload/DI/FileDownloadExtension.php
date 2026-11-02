@@ -2,6 +2,7 @@
 
 namespace Dravencms\FileDownload\DI;
 
+use Contributte\Translation\DI\TranslationProviderInterface;
 use Dravencms\FileDownload\FileDownload;
 
 use Nette\DI\CompilerExtension;
@@ -11,8 +12,13 @@ use Dravencms\Structure\DI\StructureExtension;
  * Class FileDownloadExtension
  * @package Dravencms\FileDownload\DI
  */
-class FileDownloadExtension extends CompilerExtension
+class FileDownloadExtension extends CompilerExtension implements TranslationProviderInterface
 {
+    public function getTranslationResources(): array
+    {
+        return [__DIR__ . '/../lang'];
+    }
+
     public function loadConfiguration(): void
     {
         $builder = $this->getContainerBuilder();

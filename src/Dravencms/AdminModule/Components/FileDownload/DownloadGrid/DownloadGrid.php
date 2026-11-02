@@ -93,19 +93,19 @@ class DownloadGrid extends BaseControl
         $grid->setDataSource($this->downloadRepository->getDownloadQueryBuilder());
 
 
-        $grid->addColumnText('identifier', 'Identifier', 'identifier')
+        $grid->addColumnText('identifier', 'fileDownload.admin.field.identifier', 'identifier')
             ->setSortable()
             ->setFilterText();
 
-        $grid->addColumnNumber('pagination', 'Pagination')
+        $grid->addColumnNumber('pagination', 'fileDownload.admin.field.pagination')
             ->setAlign('center')
-            ->setRenderer(function($item){
-                return $item->getPagination() ? $item->getPagination() : 'None';
+            ->setRenderer(function($item) use ($grid){
+                return $item->getPagination() ? $item->getPagination() : $grid->getTranslator()->translate('fileDownload.admin.option.noPagination');
             })
             ->setSortable()
             ->setFilterRange();
 
-        $grid->addColumnDateTime('updatedAt', 'Last edit')
+        $grid->addColumnDateTime('updatedAt', 'fileDownload.admin.field.updated')
             ->setAlign('center')
             ->setFormat($this->currentLocale->getDateTimeFormat())
             ->setSortable()
@@ -114,26 +114,26 @@ class DownloadGrid extends BaseControl
 
         if ($this->user->isAllowed('fileDownload', 'edit')) {
 
-            $grid->addAction('files', 'Files', 'files')
+            $grid->addAction('files', 'fileDownload.admin.action.files', 'files')
                 ->setIcon('folder-open')
-                ->setTitle('Files')
+                ->setTitle('fileDownload.admin.action.files')
                 ->setClass('btn btn-sm btn-primary');
 
             $grid->addAction('edit', '', 'edit')
                 ->setIcon('pencil')
-                ->setTitle('Upravit')
+                ->setTitle('fileDownload.admin.action.edit')
                 ->setClass('btn btn-sm btn-primary');
         }
 
         if ($this->user->isAllowed('fileDownload', 'delete')) {
             $grid->addAction('delete', '', 'delete!')
                 ->setIcon('trash')
-                ->setTitle('Smazat')
+                ->setTitle('fileDownload.admin.action.delete')
                 ->setClass('btn btn-sm btn-danger ajax')
-                ->setConfirmation(new StringConfirmation('Do you really want to delete row %s?', 'identifier'));
+                ->setConfirmation(new StringConfirmation('fileDownload.admin.confirm.delete', 'identifier'));
         }
 
-        $grid->addGroupAction('Smazat')->onSelect[] = [$this, 'gridGroupActionDelete'];
+        $grid->addGroupAction('fileDownload.admin.action.delete')->onSelect[] = [$this, 'gridGroupActionDelete'];
 
 
         return $grid;

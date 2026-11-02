@@ -1,0 +1,50 @@
+admin:
+	field:
+		name: Název
+		description: Popis
+		identifier: Identifikátor
+		pagination: Počet položek na stránku
+		showName: Zobrazit název
+		position: Pozice
+		downloadCount: Počet stažení
+		updated: Poslední úprava
+
+	action:
+		save: Uložit
+		edit: Upravit
+		delete: Smazat
+		files: Soubory
+
+	title:
+		downloads: Skupiny souborů ke stažení
+		newDownload: Nová skupina souborů
+		editDownload: Upravit skupinu souborů
+		files: Soubory ke stažení
+		newFile: Nový soubor ke stažení
+		editFile: Upravit soubor ke stažení
+
+	validation:
+		downloadNameRequired: Zadejte název skupiny souborů.
+		downloadNameTooLong: Název skupiny smí mít nejvýše %d znaků.
+		fileNameRequired: Zadejte název souboru.
+		fileNameTooLong: Název souboru smí mít nejvýše %d znaků.
+		identifierRequired: Zadejte jedinečný identifikátor.
+		identifierTaken: Tento identifikátor je již používán.
+		downloadForbidden: Nemáte oprávnění upravovat skupiny souborů.
+		fileForbidden: Nemáte oprávnění upravovat soubory ke stažení.
+		paginationInteger: Počet položek na stránku musí být celé číslo.
+		positionInteger: Pozice musí být celé číslo.
+		fileInteger: Identifikátor souboru musí být celé číslo.
+
+	option:
+		noPagination: Bez stránkování
+
+	confirm:
+		delete: Opravdu chcete smazat „%s“?
+
+	flash:
+		downloadSaved: Skupina souborů byla uložena.
+		downloadDeleted: Skupina souborů byla smazána.
+		fileSaved: Soubor ke stažení byl uložen.
+		fileDeleted: Soubor ke stažení byl smazán.
+

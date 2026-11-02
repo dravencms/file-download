@@ -1,0 +1,50 @@
+admin:
+	field:
+		name: Name
+		description: Description
+		identifier: Identifier
+		pagination: Items per page
+		showName: Show name
+		position: Position
+		downloadCount: Download count
+		updated: Last edit
+
+	action:
+		save: Save
+		edit: Edit
+		delete: Delete
+		files: Files
+
+	title:
+		downloads: Download groups
+		newDownload: New download group
+		editDownload: Edit download group
+		files: Download files
+		newFile: New download file
+		editFile: Edit download file
+
+	validation:
+		downloadNameRequired: Please enter a download group name.
+		downloadNameTooLong: The group name must contain at most %d characters.
+		fileNameRequired: Please enter a file name.
+		fileNameTooLong: The file name must contain at most %d characters.
+		identifierRequired: Please enter a unique identifier.
+		identifierTaken: This identifier is already in use.
+		downloadForbidden: You do not have permission to edit download groups.
+		fileForbidden: You do not have permission to edit download files.
+		paginationInteger: Items per page must be an integer.
+		positionInteger: Position must be an integer.
+		fileInteger: The file identifier must be an integer.
+
+	option:
+		noPagination: No pagination
+
+	confirm:
+		delete: Are you sure you want to delete "%s"?
+
+	flash:
+		downloadSaved: The download group has been saved.
+		downloadDeleted: The download group has been deleted.
+		fileSaved: The download file has been saved.
+		fileDeleted: The download file has been deleted.
+

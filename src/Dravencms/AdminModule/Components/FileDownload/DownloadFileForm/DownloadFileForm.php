@@ -138,24 +138,25 @@ class DownloadFileForm extends BaseControl
         foreach ($this->localeRepository->getActive() as $activeLocale) {
             $container = $form->addContainer($activeLocale->getLanguageCode());
             $container->addText('name')
-                ->setRequired('Please enter file name.')
-                ->addRule(Form::MAX_LENGTH, 'File name is too long.', 255);
+                ->setRequired('fileDownload.admin.validation.fileNameRequired')
+                ->addRule(Form::MAX_LENGTH, 'fileDownload.admin.validation.fileNameTooLong', 255);
 
             $container->addTextArea('description');
 
-            $container->addInteger('structureFile')
-                ->setType('number');
+            $container->addText('structureFile')->setNullable()->addRule(Form::INTEGER, 'fileDownload.admin.validation.fileInteger')
+                ->setHtmlType('number');
 
-            $container->addUpload('file');
+            $upload = $container->addUpload('file');
+            \Dravencms\File\Forms\UploadMessages::localize($upload->getRules());
         }
         
         $form->addText('identifier')
-            ->setRequired('Please fill in unique identifier');
+            ->setRequired('fileDownload.admin.validation.identifierRequired');
 
-        $form->addInteger('position')
+        $form->addText('position')->setNullable()->addRule(Form::INTEGER, 'fileDownload.admin.validation.positionInteger')
             ->setDisabled(is_null($this->file));
 
-        $form->addSubmit('send');
+        $form->addSubmit('send', 'fileDownload.admin.action.save');
 
         $form->onValidate[] = [$this, 'editFormValidate'];
         $form->onSuccess[] = [$this, 'editFormSucceeded'];
@@ -192,11 +193,11 @@ class DownloadFileForm extends BaseControl
         $values = $form->getValues();
 
         if (!$this->fileRepository->isIdentifierFree($values->identifier, $this->download, $this->file)) {
-            $form->addError('Tento identifier je již zabrán.');
+            $form->addError('fileDownload.admin.validation.identifierTaken');
         }
 
         if (!$this->user->isAllowed('fileDownload', 'edit')) {
-            $form->addError('Nemáte oprávění editovat download file.');
+            $form->addError('fileDownload.admin.validation.fileForbidden');
         }
     }
 

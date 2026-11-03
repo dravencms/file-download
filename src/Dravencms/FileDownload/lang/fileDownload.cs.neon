@@ -48,3 +48,6 @@ admin:
 		fileSaved: Soubor ke stažení byl uložen.
 		fileDeleted: Soubor ke stažení byl smazán.
 
+
+menu:
+    overview: 'Ke stažení'

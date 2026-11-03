@@ -48,3 +48,6 @@ admin:
 		fileSaved: The download file has been saved.
 		fileDeleted: The download file has been deleted.
 
+
+menu:
+    overview: 'Downloads'

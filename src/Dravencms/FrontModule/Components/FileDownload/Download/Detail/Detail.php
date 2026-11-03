@@ -57,7 +57,8 @@ class Detail extends BaseControl
         DownloadFileTranslationRepository $downloadFileTranslationRepository,
         CurrentLocaleResolver $currentLocaleResolver,
         BasePaginatorFactory $basePaginatorFactory,
-        FileStorage $fileStorage
+        FileStorage $fileStorage,
+        \Salamek\Files\Access\FileUrl $fileUrls
     )
     {
         $this->cmsActionOption = $cmsActionOption;
@@ -66,6 +67,7 @@ class Detail extends BaseControl
         $this->downloadTranslationRepository = $downloadTranslationRepository;
         $this->downloadFileTranslationRepository = $downloadFileTranslationRepository;
         $this->fileStorage = $fileStorage;
+        $this->fileUrls = $fileUrls;
         $this->basePaginatorFactory = $basePaginatorFactory;
         $this->currentLocale = $currentLocaleResolver->getCurrentLocale();
     }
@@ -104,6 +106,8 @@ class Detail extends BaseControl
     /**
      * @param $downloadFileTranslationId
      */
+    private \Salamek\Files\Access\FileUrl $fileUrls;
+
     public function handleDownload(int $downloadFileTranslationId): void
     {
         $downloadFileTranslation = $this->downloadFileTranslationRepository->getOneById($downloadFileTranslationId);
@@ -114,8 +118,8 @@ class Detail extends BaseControl
         else
         {
             $this->downloadFileRepository->logDownload($downloadFileTranslation->getDownloadFile());
-            $response = $this->fileStorage->downloadFile($downloadFileTranslation->getStructureFile());
-            $this->presenter->sendResponse($response);
+            $reference = \Salamek\Files\Access\FileReference::attachment('download.attachment', $downloadFileTranslation->getId(), $downloadFileTranslation->getStructureFile());
+            $this->presenter->redirectUrl($this->fileUrls->create($reference, 'download'));
         }
     }
 

@@ -15,7 +15,7 @@
     }
   ],
   "require": {
-    "dravencms/file": "^2.5",
+    "dravencms/file": "^3.0",
     "dravencms/paginator": ">=1.0",
     "php": "^8.4",
     "dravencms/database": "^0.2.4",

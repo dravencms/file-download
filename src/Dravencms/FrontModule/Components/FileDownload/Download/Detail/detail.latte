@@ -6,9 +6,9 @@
         {var $fileTranslation = $downloadFile->getTranslation($currentLocale)}
         <figure class="thumb file col-md-2 col-sm-3 col-xs-4">
             {if \Salamek\Files\Models\IFile::TYPE_IMAGE == $fileTranslation->getStructureFile()->getFile()->getType()}
-                <img class="img-responsive" n:img="$fileTranslation->getStructureFile()->getFile(), '122x91'" alt="{$fileTranslation->getName()}">
+                <img class="img-responsive" n:img="\Salamek\Files\Access\FileReference::attachment('download.attachment', $fileTranslation->getId(), $fileTranslation->getStructureFile()), '122x91'" alt="{$fileTranslation->getName()}">
             {else}
-                <img class="img-responsive" src="{$fileTranslation->getStructureFile()->getFile()|fileIcon}" alt="{$fileTranslation->getName()}">
+                <img class="img-responsive" src="{$fileTranslation->getStructureFile()->getFile()|fileIconRequest}" alt="{$fileTranslation->getName()}">
             {/if}
             <div class="file-name">
                 <h4>{$fileTranslation->getStructureFile()->getBasename()}</h4>

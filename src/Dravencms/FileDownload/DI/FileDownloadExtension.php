@@ -22,6 +22,7 @@ class FileDownloadExtension extends CompilerExtension implements TranslationProv
     public function loadConfiguration(): void
     {
         $builder = $this->getContainerBuilder();
+        $builder->addDefinition($this->prefix('files.DownloadFileProvider'))->setFactory(\Dravencms\FileDownload\Access\DownloadFileProvider::class);
         if ($this->compiler->getExtensions(\Dravencms\User\DI\UserExtension::class) !== []) {
             $builder->addDefinition($this->prefix('aclProvider'))->setFactory(\Dravencms\FileDownload\AclProvider::class);
         }

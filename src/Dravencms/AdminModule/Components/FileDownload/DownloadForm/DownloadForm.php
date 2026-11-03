@@ -163,7 +163,6 @@ class DownloadForm extends BaseControl
      */
     public function editFormSucceeded(Form $form): void
     {
-        $this->requirePermission('fileDownload', 'edit');
         $values = $form->getValues();
 
         if ($this->download) {

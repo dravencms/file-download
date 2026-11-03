@@ -89,6 +89,7 @@ class DownloadGrid extends BaseControl
     {
         /** @var DataGrid $grid */
         $grid = $this->baseGridFactory->create($this, $name);
+        $grid->setWritePermission('fileDownload', 'edit');
 
         $grid->setDataSource($this->downloadRepository->getDownloadQueryBuilder());
 
@@ -151,8 +152,11 @@ class DownloadGrid extends BaseControl
      * @param $id
      * @throws \Exception
      */
+    #[\Dravencms\User\Attributes\IsAllowed('fileDownload', 'delete')]
+    #[\Dravencms\Security\Mutation]
     public function handleDelete($id): void
     {
+        $this->requirePermission('fileDownload', 'delete');
         $downloads = $this->downloadRepository->getById($id);
         foreach ($downloads AS $download)
         {

@@ -95,6 +95,7 @@ class DownloadFileGrid extends BaseControl
     {
         /** @var DataGrid $grid */
         $grid = $this->baseGridFactory->create($this, $name);
+        $grid->setWritePermission('fileDownload', 'edit');
 
         $grid->setDefaultSort(['position' => 'ASC']);
 
@@ -153,8 +154,11 @@ class DownloadFileGrid extends BaseControl
      * @param $id
      * @throws \Exception
      */
+    #[\Dravencms\User\Attributes\IsAllowed('fileDownload', 'delete')]
+    #[\Dravencms\Security\Mutation]
     public function handleDelete($id): void
     {
+        $this->requirePermission('fileDownload', 'delete');
         $downloadFiles = $this->downloadFileRepository->getById($id);
         foreach ($downloadFiles AS $downloadFile)
         {

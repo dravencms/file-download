@@ -20,6 +20,7 @@ use Dravencms\Model\FileDownload\Entities\DownloadFile;
 use Dravencms\Model\FileDownload\Repository\DownloadFileRepository;
 use Dravencms\Model\FileDownload\Repository\DownloadRepository;
 
+#[\Dravencms\User\Attributes\IsAllowed('fileDownload', 'edit')]
 class DownloadPresenter extends SecuredPresenter
 {
     /** @var DownloadRepository @inject */
@@ -47,11 +48,13 @@ class DownloadPresenter extends SecuredPresenter
     /** @var null|DownloadFile */
     private $file = null;
 
+    #[\Dravencms\User\Attributes\IsAllowed('fileDownload', 'edit')]
     public function renderDefault(): void
     {
         $this->template->h1 = $this->translator->translate('fileDownload.admin.title.downloads');
     }
 
+    #[\Dravencms\User\Attributes\IsAllowed('fileDownload', 'edit')]
     public function actionEdit(?int $id = null): void
     {
         if ($id) {
@@ -70,6 +73,7 @@ class DownloadPresenter extends SecuredPresenter
     /**
      * @param $id
      */
+    #[\Dravencms\User\Attributes\IsAllowed('fileDownload', 'edit')]
     public function actionFiles(int $id): void
     {
         $this->download = $this->downloadRepository->getOneById($id);
@@ -82,6 +86,7 @@ class DownloadPresenter extends SecuredPresenter
      * @param null $fileId
      * @throws \Nette\Application\BadRequestException
      */
+    #[\Dravencms\User\Attributes\IsAllowed('fileDownload', 'edit')]
     public function actionEditFile(int $downloadId, ?int $fileId = null): void
     {
         $this->download = $this->downloadRepository->getOneById($downloadId);

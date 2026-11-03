@@ -18,7 +18,8 @@
     "dravencms/file": "^2.5",
     "dravencms/paginator": ">=1.0",
     "php": "^8.4",
-    "dravencms/database": "^0.2.4"
+    "dravencms/database": "^0.2.4",
+    "dravencms/application": "^0.3"
   },
   "suggest": {
     "dravencms/structure": "Allows file download components to be used in cms"
@@ -37,7 +38,7 @@
     }
   },
   "conflict": {
-    "dravencms/admin": "<3.0",
-    "dravencms/user": "<3.0"
+    "dravencms/admin": "<3.2",
+    "dravencms/user": "<3.1"
   }
 }

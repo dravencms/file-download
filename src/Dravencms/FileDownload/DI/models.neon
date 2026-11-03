@@ -2,5 +2,3 @@
 - Dravencms\Model\FileDownload\Repository\DownloadFileRepository
 - Dravencms\Model\FileDownload\Repository\DownloadTranslationRepository
 - Dravencms\Model\FileDownload\Repository\DownloadFileTranslationRepository
-
-- Dravencms\Model\FileDownload\Fixtures\AclOperationFixtures

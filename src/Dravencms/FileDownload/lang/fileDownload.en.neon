@@ -51,3 +51,11 @@ admin:
 
 menu:
     overview: 'Downloads'
+
+acl:
+    resource: 'Downloads'
+    permissions:
+        edit:
+            label: 'Manage downloads'
+        delete:
+            label: 'Delete downloads'

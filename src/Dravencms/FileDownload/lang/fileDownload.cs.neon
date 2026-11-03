@@ -51,3 +51,11 @@ admin:
 
 menu:
     overview: 'Ke stažení'
+
+acl:
+    resource: 'Soubory ke stažení'
+    permissions:
+        edit:
+            label: 'Spravovat soubory ke stažení'
+        delete:
+            label: 'Mazat soubory ke stažení'

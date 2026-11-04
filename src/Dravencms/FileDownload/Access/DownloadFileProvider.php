@@ -2,11 +2,11 @@
 namespace Dravencms\FileDownload\Access;
 use Salamek\Files\Access\{IFileAccessProvider, FileAccess};
 use Dravencms\Model\FileDownload\Repository\DownloadFileTranslationRepository;
-use Nette\Security\User;
+use Dravencms\File\Access\AdminFileAccess;
 
 final class DownloadFileProvider implements IFileAccessProvider
 {
-    public function __construct(private DownloadFileTranslationRepository $repository, private User $user) {}
+    public function __construct(private DownloadFileTranslationRepository $repository, private AdminFileAccess $user) {}
     public static function getId(): string { return 'download.attachment'; }
     public function resolve(string $reference): ?FileAccess
     {

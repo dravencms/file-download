@@ -28,7 +28,6 @@ use Dravencms\Model\FileDownload\Entities\Download;
 use Dravencms\Model\FileDownload\Entities\DownloadFile;
 use Dravencms\Model\FileDownload\Entities\DownloadFileTranslation;
 use Dravencms\Model\FileDownload\Repository\DownloadFileRepository;
-use Dravencms\Model\File\Repository\StructureFileRepository;
 use Dravencms\Model\FileDownload\Repository\DownloadFileTranslationRepository;
 use Dravencms\Model\Locale\Repository\LocaleRepository;
 use Dravencms\Database\EntityManager;
@@ -58,9 +57,6 @@ class DownloadFileForm extends BaseControl
     /** @var DownloadFileRepository */
     private $fileRepository;
     
-    /** @var StructureFileRepository */
-    private $structureFileRepository;
-
     /** @var LocaleRepository */
     private $localeRepository;
 
@@ -91,7 +87,6 @@ class DownloadFileForm extends BaseControl
      * @param EntityManager $entityManager
      * @param DownloadFileRepository $fileRepository
      * @param DownloadFileTranslationRepository $downloadFileTranslationRepository
-     * @param StructureFileRepository $structureFileRepository
      * @param StructureRepository $structureRepository
      * @param LocaleRepository $localeRepository
      * @param FileStorage $fileStorage
@@ -105,7 +100,6 @@ class DownloadFileForm extends BaseControl
         User $user,
         DownloadFileRepository $fileRepository,
         DownloadFileTranslationRepository $downloadFileTranslationRepository,
-        StructureFileRepository $structureFileRepository,
         StructureRepository $structureRepository,
         LocaleRepository $localeRepository,
         FileStorage $fileStorage,
@@ -121,7 +115,6 @@ class DownloadFileForm extends BaseControl
         $this->user = $user;
         $this->fileRepository = $fileRepository;
         $this->localeRepository = $localeRepository;
-        $this->structureFileRepository = $structureFileRepository;
         $this->structureRepository = $structureRepository;
         $this->fileStorage = $fileStorage;
         $this->file = $file;
@@ -143,11 +136,8 @@ class DownloadFileForm extends BaseControl
 
             $container->addTextArea('description');
 
-            $container->addText('structureFile')->setNullable()->addRule(Form::INTEGER, 'fileDownload.admin.validation.fileInteger')
-                ->setHtmlType('number');
+            $this->fileFile->addSelector($container, 'structureFile', 'file.selectFile', null, true)->setExistingFile($this->file ? $this->downloadFileTranslationRepository->getTranslation($this->file, $activeLocale)?->getStructureFile() : null);
 
-            $upload = $container->addUpload('file');
-            \Dravencms\File\Forms\UploadMessages::localize($upload->getRules());
         }
         
         $form->addText('identifier')
@@ -223,11 +213,11 @@ class DownloadFileForm extends BaseControl
 
         foreach ($this->localeRepository->getActive() AS $activeLocale) {
 
-            $structureFileLocale = $values->{$activeLocale->getLanguageCode()}->structureFile;
-            $structureFile = ($structureFileLocale ? $this->structureFileRepository->getOneById($structureFileLocale) : null);
+            $selection = $values->{$activeLocale->getLanguageCode()}->structureFile;
+            $structureFile = $selection->file;
 
             /** @var FileUpload $fileUpload */
-            $fileUpload = $values->{$activeLocale->getLanguageCode()}->file;
+            $fileUpload = $selection->upload;
             if ($fileUpload->isOk()) {
                 $structureName = 'Download';
                 if (!$structure = $this->structureRepository->getOneByName($structureName)) {
@@ -269,7 +259,7 @@ class DownloadFileForm extends BaseControl
     {
         $template = $this->template;
         $template->activeLocales = $this->localeRepository->getActive();
-        $template->fileSelectorPath = $this->fileFile->getFileSelectorPath();
+
         $template->setFile(__DIR__ . '/DownloadFileForm.latte');
         $template->render();
     }

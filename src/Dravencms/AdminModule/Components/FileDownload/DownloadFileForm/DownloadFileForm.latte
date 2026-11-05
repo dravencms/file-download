@@ -30,7 +30,7 @@
                             </div><!-- col-sm-12 -->
                         </div><!-- row -->
 
-                        {include $fileSelectorPath, filetype => null, form => $form, selectorName => structureFile, uploadName => file, id => $form[$activeLocale->getLanguageCode()]['structureFile']->htmlId}
+                        <div class="col-sm-12 mb-3">{label structureFile /}{input structureFile}</div>
 
                     </fieldset>
                 {/formContainer}
